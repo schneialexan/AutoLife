@@ -21,6 +21,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Node (Edge Function IDE types only; runtime uses Deno + deno.json)
+supabase/functions/node_modules/
+
 # Supabase (local)
 supabase/.branches/
 supabase/.temp/
