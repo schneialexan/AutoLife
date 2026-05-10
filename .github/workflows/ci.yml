@@ -31,3 +31,17 @@ jobs:
       - name: Test
         run: melos run test
 
+      - name: Build Flutter web (autolife-shell)
+        run: |
+          cd apps/autolife-shell
+          flutter build web --release
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Supabase db reset (migrations + seed)
+        run: |
+          supabase start
+          supabase db reset --local
+          supabase stop
+

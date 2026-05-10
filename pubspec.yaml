@@ -7,9 +7,10 @@ environment:
 workspace:
   - packages/autolife-ui
   - packages/autolife-core
+  - apps/autolife-shell
 
 dev_dependencies:
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   melos: ^7.7.0
 
 # Melos v7+ reads workspace configuration from `pubspec.yaml`.
