@@ -1,0 +1,16 @@
+name: autolife
+
+packages:
+  - packages/**
+  - apps/**
+
+scripts:
+  bootstrap:
+    run: melos exec -- flutter pub get
+  format:check:
+    run: melos exec -- dart format --set-exit-if-changed .
+  lint:
+    run: melos exec -- dart analyze --fatal-infos
+  test:
+    run: melos exec -- flutter test
+
