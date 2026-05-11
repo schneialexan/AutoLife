@@ -13,36 +13,74 @@ class AutolifeShellApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AutoLife',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        useMaterial3: true,
-      ),
-      home: const _PlaceholderHome(),
+      theme: AutoLifeTheme.light(),
+      darkTheme: AutoLifeTheme.dark(),
+      themeMode: ThemeMode.system,
+      home: const _DemoShellHome(),
     );
   }
 }
 
-class _PlaceholderHome extends StatelessWidget {
-  const _PlaceholderHome();
+class _DemoShellHome extends StatefulWidget {
+  const _DemoShellHome();
+
+  @override
+  State<_DemoShellHome> createState() => _DemoShellHomeState();
+}
+
+class _DemoShellHomeState extends State<_DemoShellHome> {
+  int _index = 0;
 
   static const _devTenant = Tenant(tenantId: 'local-dev');
 
+  static const _destinations = [
+    NavigationDestination(
+      icon: Icon(Icons.home_outlined),
+      selectedIcon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.calendar_month_outlined),
+      selectedIcon: Icon(Icons.calendar_month),
+      label: 'Calendar',
+    ),
+    NavigationDestination(
+      icon: Icon(Icons.settings_outlined),
+      selectedIcon: Icon(Icons.settings),
+      label: 'Settings',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('AutoLife')),
+    final bodyLabel = switch (_index) {
+      0 => 'Home',
+      1 => 'Calendar',
+      _ => 'Settings',
+    };
+
+    return AutoLifeBottomNavShell(
+      appBar: AutoLifeAppBar(title: const Text('AutoLife')),
+      destinations: _destinations,
+      selectedIndex: _index,
+      onDestinationSelected: (i) => setState(() => _index = i),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AutolifePlaceholder(),
-            const SizedBox(height: 16),
-            const Text('Shell placeholder — workspace packages linked.'),
-            Text(
-              'Tenant: ${_devTenant.tenantId}',
-              style: Theme.of(context).textTheme.labelSmall,
+        child: Padding(
+          padding: const EdgeInsets.all(AutoLifeSpacing.md),
+          child: AutoLifeSurfaceCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(bodyLabel, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: AutoLifeSpacing.sm),
+                Text(
+                  'Tenant: ${_devTenant.tenantId}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
