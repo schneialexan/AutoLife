@@ -32,9 +32,7 @@ final Provider<SyncEngine> syncEngineProvider = Provider<SyncEngine>((ref) {
 });
 
 /// Read-only [`SyncStatus`](sync_engine.dart) + queue depth for UI.
-final Provider<SyncStatus> syncStatusProvider = Provider<SyncStatus>(
-  (ref) {
-    ref.watch(syncStatusTickProvider);
-    return ref.read(syncEngineProvider).status;
-  },
-);
+final Provider<SyncStatus> syncStatusProvider = Provider<SyncStatus>((ref) {
+  ref.watch(syncStatusTickProvider);
+  return ref.read(syncEngineProvider).status;
+});

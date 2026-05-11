@@ -1,8 +1,8 @@
-/// Shared AutoLife domain contracts (events, tenancy stubs, service shapes).
+/// Shared AutoLife domain contracts (events, family tenancy, service shapes).
 ///
 /// ### Models
 /// - [SystemEvent], [EventDelivery] — `system_event` / `event_delivery` rows.
-/// - [Profile], [Family], [Membership], [Role] — tenancy stubs through phase 2.2.
+/// - [Profile], [Family], [Membership], [FamilyRole] — tenancy (`families` / `memberships`).
 ///
 /// ### Events
 /// - [EventEnvelope] — producer metadata (idempotency, ordering, module).
@@ -12,6 +12,7 @@
 /// - [Tenant] — resolved tenant context.
 ///
 /// ### Service interfaces (implementations in later phases)
+/// - [AuthService], [SupabaseAuthService], [AutoLifeSupabaseBootstrap] — phase 2.1 auth flows.
 /// - [EventProducer] — phase 1.5 producer / Supabase insert.
 /// - [EventConsumerRegistry] — phase 1.5 `process-event` dispatch.
 /// - [Repository] — data access in apps / phase 1.6 Drift.
@@ -37,23 +38,44 @@ export 'src/models/event_delivery.dart';
 /// Lifecycle of an [EventDelivery] row (`pending` … `dead_letter`).
 export 'src/models/event_delivery_status.dart';
 
-/// Household / tenant aggregate (stub through phase 2.2).
-export 'src/models/family.dart';
+/// Household / tenant (`public.families`).
+export 'src/tenancy/models/family.dart';
 
-/// Profile↔family link with [Role] (stub through phase 2.2).
-export 'src/models/membership.dart';
+/// User↔family membership (`public.memberships`).
+export 'src/tenancy/models/membership.dart';
+
+/// Invitation row (`public.family_invitations`).
+export 'src/tenancy/models/family_invitation.dart';
+
+/// Tenancy service interface + Supabase implementation.
+export 'src/tenancy/tenancy_service.dart';
+export 'src/tenancy/supabase_tenancy_service.dart';
 
 /// Human-facing user record (stub through phase 2.2).
 export 'src/models/profile.dart';
 
-/// Coarse tenancy role enum (expanded in phase 2.3).
+/// Canonical `family_role` enum (matches Postgres enum + policy matrices).
 export 'src/models/role.dart';
+
+export 'src/policy/approval_engine.dart';
+export 'src/policy/capability.dart';
+export 'src/policy/capability_grant_defaults.dart';
+export 'src/policy/chore_task_completion_guard.dart';
+export 'src/policy/matrix_model.dart';
+export 'src/policy/role_policy_service.dart';
 
 /// Canonical persisted event for the AutoLife event bus (`system_event`).
 export 'src/models/system_event.dart';
 
 /// Local calendar row model (feature schemas may extend in later phases).
 export 'src/models/calendar_event.dart';
+
+/// Supabase-backed auth façade (phase 2.1).
+export 'src/auth/auth_service.dart';
+export 'src/auth/models/auth_error.dart';
+export 'src/auth/models/auth_session.dart';
+export 'src/auth/models/auth_user.dart';
+export 'src/auth/supabase_auth_service.dart';
 
 /// Fan-out dispatch registry consumed by phase 1.5 workers.
 export 'src/services/event_consumer.dart';

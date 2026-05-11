@@ -3,7 +3,8 @@ import 'package:drift/drift.dart';
 import '../../models/event_delivery_status.dart';
 
 /// Maps [EventDeliveryStatus] to the Supabase enum text values.
-class EventDeliveryStatusConverter extends TypeConverter<EventDeliveryStatus, String> {
+class EventDeliveryStatusConverter
+    extends TypeConverter<EventDeliveryStatus, String> {
   const EventDeliveryStatusConverter();
 
   @override
@@ -19,7 +20,7 @@ class EventDeliveryStatusConverter extends TypeConverter<EventDeliveryStatus, St
 
   @override
   String toSql(EventDeliveryStatus value) => switch (value) {
-        EventDeliveryStatus.deadLetter => 'dead_letter',
-        _ => value.name,
-      };
+    EventDeliveryStatus.deadLetter => 'dead_letter',
+    _ => value.name,
+  };
 }

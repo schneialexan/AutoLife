@@ -11,10 +11,7 @@ enum ConnectorConnectionPhase {
 
 @immutable
 class ConnectorStatus {
-  const ConnectorStatus({
-    required this.phase,
-    this.lastError,
-  });
+  const ConnectorStatus({required this.phase, this.lastError});
 
   final ConnectorConnectionPhase phase;
   final String? lastError;

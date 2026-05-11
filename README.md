@@ -47,4 +47,5 @@ flutter run -d chrome
 - `packages/autolife-ui` — shared UI/design system (expanded in Phase 1.3).
 - `supabase/` — Supabase config, `migrations/`, and `functions/`.
 
+Planning docs for multi-tenant data live in [`docs/tenancy.md`](docs/tenancy.md).
 See [CONTRIBUTING.md](CONTRIBUTING.md) for workflow details.

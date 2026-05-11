@@ -1,0 +1,130 @@
+# Single source of truth for AutoLife Phase 2.3 capability defaults (Idea-Refined Part 5.1).
+# Run: dart run tool/generate_policy_matrix.dart
+version: 1
+
+capabilities:
+  calendar.view:
+    description: View shared family calendar events.
+  calendar.create_event:
+    description: Add calendar events (may require parent approval for minors).
+  calendar.edit_own_event:
+    description: Edit events the user created.
+  chores.view_assigned:
+    description: See assigned chores.
+  chores.complete_task:
+    description: Mark chore complete; may require photo proof or parent verification.
+  chores.manage_assignments:
+    description: Create or reassign chores.
+  family.view_members:
+    description: See household member list.
+  family.invite_members:
+    description: Send email invitations.
+  family.manage_policy:
+    description: Edit role matrix and approval settings (owners).
+  allowance.view:
+    description: View allowance balances.
+  allowance.manage:
+    description: Configure allowance rules and payouts.
+
+# Default capability cells: granted + approval / chore enforcement flags.
+# requires_parent_approval: if true, sensitive actions create an approval request before taking effect.
+# require_photo_proof / require_parent_verification: enforced on chore completion (sample module hook).
+matrix:
+  owner:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: false }
+    calendar.edit_own_event: { granted: true, requires_parent_approval: false }
+    chores.view_assigned: { granted: true, requires_parent_approval: false }
+    chores.complete_task: { granted: true, requires_parent_approval: false }
+    chores.manage_assignments: { granted: true, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: true, requires_parent_approval: false }
+    family.manage_policy: { granted: true, requires_parent_approval: false }
+    allowance.view: { granted: true, requires_parent_approval: false }
+    allowance.manage: { granted: true, requires_parent_approval: false }
+
+  partner:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: false }
+    calendar.edit_own_event: { granted: true, requires_parent_approval: false }
+    chores.view_assigned: { granted: true, requires_parent_approval: false }
+    chores.complete_task: { granted: true, requires_parent_approval: false }
+    chores.manage_assignments: { granted: true, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: true, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: true, requires_parent_approval: false }
+    allowance.manage: { granted: true, requires_parent_approval: false }
+
+  teenager:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: true }
+    calendar.edit_own_event: { granted: true, requires_parent_approval: false }
+    chores.view_assigned: { granted: true, requires_parent_approval: false }
+    chores.complete_task:
+      granted: true
+      requires_parent_approval: false
+      require_photo_proof: false
+      require_parent_verification: true
+    chores.manage_assignments: { granted: false, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: false, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: true, requires_parent_approval: false }
+    allowance.manage: { granted: false, requires_parent_approval: false }
+
+  child:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: true }
+    calendar.edit_own_event: { granted: false, requires_parent_approval: false }
+    chores.view_assigned: { granted: true, requires_parent_approval: false }
+    chores.complete_task:
+      granted: true
+      requires_parent_approval: false
+      require_photo_proof: true
+      require_parent_verification: true
+    chores.manage_assignments: { granted: false, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: false, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: true, requires_parent_approval: false }
+    allowance.manage: { granted: false, requires_parent_approval: false }
+
+  grandparent:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: true }
+    calendar.edit_own_event: { granted: true, requires_parent_approval: false }
+    chores.view_assigned: { granted: false, requires_parent_approval: false }
+    chores.complete_task: { granted: false, requires_parent_approval: false }
+    chores.manage_assignments: { granted: false, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: false, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: false, requires_parent_approval: false }
+    allowance.manage: { granted: false, requires_parent_approval: false }
+
+  guest:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: false, requires_parent_approval: false }
+    calendar.edit_own_event: { granted: false, requires_parent_approval: false }
+    chores.view_assigned: { granted: false, requires_parent_approval: false }
+    chores.complete_task: { granted: false, requires_parent_approval: false }
+    chores.manage_assignments: { granted: false, requires_parent_approval: false }
+    family.view_members: { granted: false, requires_parent_approval: false }
+    family.invite_members: { granted: false, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: false, requires_parent_approval: false }
+    allowance.manage: { granted: false, requires_parent_approval: false }
+
+  babysitter:
+    calendar.view: { granted: true, requires_parent_approval: false }
+    calendar.create_event: { granted: true, requires_parent_approval: true }
+    calendar.edit_own_event: { granted: true, requires_parent_approval: false }
+    chores.view_assigned: { granted: true, requires_parent_approval: false }
+    chores.complete_task: { granted: true, requires_parent_approval: false }
+    chores.manage_assignments: { granted: false, requires_parent_approval: false }
+    family.view_members: { granted: true, requires_parent_approval: false }
+    family.invite_members: { granted: false, requires_parent_approval: false }
+    family.manage_policy: { granted: false, requires_parent_approval: false }
+    allowance.view: { granted: false, requires_parent_approval: false }
+    allowance.manage: { granted: false, requires_parent_approval: false }

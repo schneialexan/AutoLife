@@ -58,9 +58,9 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
         unawaited(ref.read(syncEngineProvider).runCycle());
       },
       failure: (f) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed: ${f.message}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed: ${f.message}')));
       },
     );
   }

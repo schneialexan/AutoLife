@@ -99,34 +99,84 @@ void main() {
     }
   });
 
-  test('connector credential migration stores secrets only via Vault helpers', () {
+  test('family tenancy migrations define canonical tables', () {
     final sql = File(
-      p.join(repoRoot, 'supabase/migrations/0020_connector_credentials.sql'),
+      p.join(repoRoot, 'supabase/migrations/20260512000100_family_tenancy.sql'),
     ).readAsStringSync();
-    final lowered = sql.toLowerCase();
-    for (final token in [
-      'vault_secret_id',
-      'connector_event',
-      'integration_store_connector_secret',
-      'vault.create_secret',
-    ]) {
-      expect(
-        lowered.contains(token),
-        isTrue,
-        reason: 'Expected 0020_connector_credentials.sql to mention $token',
-      );
-    }
-    final forbidden = ['access_token', 'refresh_token', 'client_secret'];
-    final credentialBlock =
-        lowered.split('create table public.connector_credential')[1];
-    final credentialChunk = credentialBlock.split('create table')[0];
-    for (final phrase in forbidden) {
-      expect(
-        credentialChunk.contains(phrase),
-        isFalse,
-        reason:
-            'connector_credential must not declare plaintext secret columns like `$phrase`',
-      );
-    }
+    expect(sql.toLowerCase(), contains('public.families'));
+    expect(sql.toLowerCase(), contains('public.memberships'));
+    expect(sql.toLowerCase(), contains('family_invitations'));
+    expect(sql, contains('token_hash'));
+
+    final fnSql = File(
+      p.join(
+        repoRoot,
+        'supabase/migrations/20260512000110_family_tenancy_functions.sql',
+      ),
+    ).readAsStringSync();
+    expect(fnSql.toLowerCase(), contains('accept_invitation'));
+    expect(fnSql.toLowerCase(), contains('revoke_invitation'));
   });
+
+  test('phase 2.3 policy migrations install role enum + policy tables', () {
+    final roleSql = File(
+      p.join(repoRoot, 'supabase/migrations/20260512000200_role_enum.sql'),
+    ).readAsStringSync();
+    expect(roleSql.toLowerCase(), contains('family_role'));
+    expect(roleSql.toLowerCase(), contains('public.memberships'));
+
+    final grantsSql = File(
+      p.join(
+        repoRoot,
+        'supabase/migrations/20260512000210_capability_matrix.sql',
+      ),
+    ).readAsStringSync();
+    expect(grantsSql.toLowerCase(), contains('capability_grants'));
+    expect(grantsSql.toLowerCase(), contains('capability_matrix_default'));
+
+    final approvalSql = File(
+      p.join(
+        repoRoot,
+        'supabase/migrations/20260512000220_approval_engine.sql',
+      ),
+    ).readAsStringSync();
+    expect(approvalSql.toLowerCase(), contains('approval_requests'));
+    expect(approvalSql.toLowerCase(), contains('approval_auto_rules'));
+    expect(approvalSql.toLowerCase(), contains('enforce_capability'));
+  });
+
+  test(
+    'connector credential migration stores secrets only via Vault helpers',
+    () {
+      final sql = File(
+        p.join(repoRoot, 'supabase/migrations/0020_connector_credentials.sql'),
+      ).readAsStringSync();
+      final lowered = sql.toLowerCase();
+      for (final token in [
+        'vault_secret_id',
+        'connector_event',
+        'integration_store_connector_secret',
+        'vault.create_secret',
+      ]) {
+        expect(
+          lowered.contains(token),
+          isTrue,
+          reason: 'Expected 0020_connector_credentials.sql to mention $token',
+        );
+      }
+      final forbidden = ['access_token', 'refresh_token', 'client_secret'];
+      final credentialBlock = lowered.split(
+        'create table public.connector_credential',
+      )[1];
+      final credentialChunk = credentialBlock.split('create table')[0];
+      for (final phrase in forbidden) {
+        expect(
+          credentialChunk.contains(phrase),
+          isFalse,
+          reason:
+              'connector_credential must not declare plaintext secret columns like `$phrase`',
+        );
+      }
+    },
+  );
 }

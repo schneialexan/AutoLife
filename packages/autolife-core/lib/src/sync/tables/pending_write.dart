@@ -3,10 +3,7 @@ import 'package:drift/drift.dart';
 /// Durable mutation queue (`pending_write` — see [docs/offline-sync-contract.md]).
 @TableIndex(
   name: 'pending_write_tenant_idempotency',
-  columns: {
-    #tenantId,
-    #idempotencyKey,
-  },
+  columns: {#tenantId, #idempotencyKey},
   unique: true,
 )
 class PendingWrites extends Table {

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Membership {
 
- String get id;@JsonKey(name: 'family_id') String get familyId;@JsonKey(name: 'profile_id') String get profileId; Role get role;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
+@JsonKey(name: 'family_id') String get familyId;@JsonKey(name: 'user_id') String get userId;@JsonKey(name: 'role') FamilyRole get role;@JsonKey(name: 'joined_at') DateTime? get joinedAt;@JsonKey(name: 'removed_at') DateTime? get removedAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of Membership
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MembershipCopyWith<Membership> get copyWith => _$MembershipCopyWithImpl<Members
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Membership&&(identical(other.id, id) || other.id == id)&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.profileId, profileId) || other.profileId == profileId)&&(identical(other.role, role) || other.role == role)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Membership&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.removedAt, removedAt) || other.removedAt == removedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,familyId,profileId,role,updatedAt);
+int get hashCode => Object.hash(runtimeType,familyId,userId,role,joinedAt,removedAt,updatedAt);
 
 @override
 String toString() {
-  return 'Membership(id: $id, familyId: $familyId, profileId: $profileId, role: $role, updatedAt: $updatedAt)';
+  return 'Membership(familyId: $familyId, userId: $userId, role: $role, joinedAt: $joinedAt, removedAt: $removedAt, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MembershipCopyWith<$Res>  {
   factory $MembershipCopyWith(Membership value, $Res Function(Membership) _then) = _$MembershipCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'family_id') String familyId,@JsonKey(name: 'profile_id') String profileId, Role role,@JsonKey(name: 'updated_at') DateTime? updatedAt
+@JsonKey(name: 'family_id') String familyId,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'role') FamilyRole role,@JsonKey(name: 'joined_at') DateTime? joinedAt,@JsonKey(name: 'removed_at') DateTime? removedAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -65,13 +65,14 @@ class _$MembershipCopyWithImpl<$Res>
 
 /// Create a copy of Membership
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? familyId = null,Object? profileId = null,Object? role = null,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? familyId = null,Object? userId = null,Object? role = null,Object? joinedAt = freezed,Object? removedAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,familyId: null == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
-as String,profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+familyId: null == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as Role,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as FamilyRole,joinedAt: freezed == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,removedAt: freezed == removedAt ? _self.removedAt : removedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'profile_id')  String profileId,  Role role, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'role')  FamilyRole role, @JsonKey(name: 'joined_at')  DateTime? joinedAt, @JsonKey(name: 'removed_at')  DateTime? removedAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Membership() when $default != null:
-return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updatedAt);case _:
+return $default(_that.familyId,_that.userId,_that.role,_that.joinedAt,_that.removedAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updated
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'profile_id')  String profileId,  Role role, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'role')  FamilyRole role, @JsonKey(name: 'joined_at')  DateTime? joinedAt, @JsonKey(name: 'removed_at')  DateTime? removedAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Membership():
-return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updatedAt);case _:
+return $default(_that.familyId,_that.userId,_that.role,_that.joinedAt,_that.removedAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +199,10 @@ return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updated
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'profile_id')  String profileId,  Role role, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'family_id')  String familyId, @JsonKey(name: 'user_id')  String userId, @JsonKey(name: 'role')  FamilyRole role, @JsonKey(name: 'joined_at')  DateTime? joinedAt, @JsonKey(name: 'removed_at')  DateTime? removedAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Membership() when $default != null:
-return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updatedAt);case _:
+return $default(_that.familyId,_that.userId,_that.role,_that.joinedAt,_that.removedAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -213,13 +214,14 @@ return $default(_that.id,_that.familyId,_that.profileId,_that.role,_that.updated
 @JsonSerializable()
 
 class _Membership implements Membership {
-  const _Membership({required this.id, @JsonKey(name: 'family_id') required this.familyId, @JsonKey(name: 'profile_id') required this.profileId, required this.role, @JsonKey(name: 'updated_at') this.updatedAt});
+  const _Membership({@JsonKey(name: 'family_id') required this.familyId, @JsonKey(name: 'user_id') required this.userId, @JsonKey(name: 'role') required this.role, @JsonKey(name: 'joined_at') this.joinedAt, @JsonKey(name: 'removed_at') this.removedAt, @JsonKey(name: 'updated_at') this.updatedAt});
   factory _Membership.fromJson(Map<String, dynamic> json) => _$MembershipFromJson(json);
 
-@override final  String id;
 @override@JsonKey(name: 'family_id') final  String familyId;
-@override@JsonKey(name: 'profile_id') final  String profileId;
-@override final  Role role;
+@override@JsonKey(name: 'user_id') final  String userId;
+@override@JsonKey(name: 'role') final  FamilyRole role;
+@override@JsonKey(name: 'joined_at') final  DateTime? joinedAt;
+@override@JsonKey(name: 'removed_at') final  DateTime? removedAt;
 @override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 
 /// Create a copy of Membership
@@ -235,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Membership&&(identical(other.id, id) || other.id == id)&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.profileId, profileId) || other.profileId == profileId)&&(identical(other.role, role) || other.role == role)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Membership&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.joinedAt, joinedAt) || other.joinedAt == joinedAt)&&(identical(other.removedAt, removedAt) || other.removedAt == removedAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,familyId,profileId,role,updatedAt);
+int get hashCode => Object.hash(runtimeType,familyId,userId,role,joinedAt,removedAt,updatedAt);
 
 @override
 String toString() {
-  return 'Membership(id: $id, familyId: $familyId, profileId: $profileId, role: $role, updatedAt: $updatedAt)';
+  return 'Membership(familyId: $familyId, userId: $userId, role: $role, joinedAt: $joinedAt, removedAt: $removedAt, updatedAt: $updatedAt)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$MembershipCopyWith<$Res> implements $MembershipCopyWith<$
   factory _$MembershipCopyWith(_Membership value, $Res Function(_Membership) _then) = __$MembershipCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'family_id') String familyId,@JsonKey(name: 'profile_id') String profileId, Role role,@JsonKey(name: 'updated_at') DateTime? updatedAt
+@JsonKey(name: 'family_id') String familyId,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'role') FamilyRole role,@JsonKey(name: 'joined_at') DateTime? joinedAt,@JsonKey(name: 'removed_at') DateTime? removedAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -272,13 +274,14 @@ class __$MembershipCopyWithImpl<$Res>
 
 /// Create a copy of Membership
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? familyId = null,Object? profileId = null,Object? role = null,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? familyId = null,Object? userId = null,Object? role = null,Object? joinedAt = freezed,Object? removedAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_Membership(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,familyId: null == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
-as String,profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
+familyId: null == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as Role,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as FamilyRole,joinedAt: freezed == joinedAt ? _self.joinedAt : joinedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,removedAt: freezed == removedAt ? _self.removedAt : removedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

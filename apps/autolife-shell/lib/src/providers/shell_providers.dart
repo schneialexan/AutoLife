@@ -5,6 +5,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase/supabase.dart';
 
+import 'auth_provider.dart';
+import 'tenancy_provider.dart';
+
 /// Resolved tenant for smoke / shell demo (`system_event.tenant_id`, text).
 final shellTenantIdProvider = Provider<String>((ref) => 'local-dev');
 
@@ -12,6 +15,12 @@ final shellTenantIdProvider = Provider<String>((ref) => 'local-dev');
 const shellDemoFamilyScopeUuid = String.fromEnvironment(
   'AUTOLIFE_DEMO_FAMILY_UUID',
   defaultValue: '11111111-1111-1111-1111-111111111111',
+);
+
+/// Seeded `profile.id` for incremental sync pulls in smoke mode (`supabase/seed.sql`).
+const shellDemoProfileUuid = String.fromEnvironment(
+  'AUTOLIFE_DEMO_PROFILE_UUID',
+  defaultValue: '22222222-2222-2222-2222-222222222201',
 );
 
 /// Bound only in Supabase smoke mode.
@@ -39,20 +48,25 @@ final shellEventProducerProvider = Provider<EventProducer>((ref) {
   return OfflineAwareEventProducer(
     onlineProducer: SupabaseEventProducer(client),
     offlineQueue: sync.offlineWriteQueue,
-    probeOnline: () => ref.read(syncEngineProvider).connectivityWatcher.isOnline(),
+    probeOnline: () =>
+        ref.read(syncEngineProvider).connectivityWatcher.isOnline(),
     defaultActorId: 'shell-actor',
   );
 });
 
 List<Override> smokeSupabaseOverrides({
   required SupabaseClient client,
+  required AuthService authService,
   required AutolifeDatabase database,
   required ConnectivityWatcher connectivity,
+  required bool shellSmokeIntegration,
 }) {
   return [
     supabaseClientProvider.overrideWithValue(client),
+    authServiceProvider.overrideWithValue(authService),
     autolifeDatabaseProvider.overrideWithValue(database),
     shellConnectivityProvider.overrideWithValue(connectivity),
+    tenancyServiceProvider.overrideWithValue(SupabaseTenancyService(client)),
     syncEngineProvider.overrideWith((ref) {
       final engine = SyncEngine(
         db: ref.watch(autolifeDatabaseProvider),
@@ -61,7 +75,12 @@ List<Override> smokeSupabaseOverrides({
         cipher: ref.watch(shellPayloadCipherProvider),
         conflictResolver: LastWriterWinsResolver(),
         tenantId: ref.watch(shellTenantIdProvider),
-        tenancyFamilyScopeId: shellDemoFamilyScopeUuid,
+        tenancyFamilyScopeId: shellSmokeIntegration
+            ? shellDemoFamilyScopeUuid
+            : null,
+        tenancyProfileScopeId: shellSmokeIntegration
+            ? shellDemoProfileUuid
+            : client.auth.currentUser?.id,
       );
       void onEngineUpdate() {
         SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -105,8 +124,9 @@ List<Override> smokeSupabaseOverrides({
 }
 
 /// Today's smoke-module events from the local Drift cache (phase 1.8).
-final todaySmokeEventsProvider =
-    StreamProvider<List<SystemEventCacheData>>((ref) {
+final todaySmokeEventsProvider = StreamProvider<List<SystemEventCacheData>>((
+  ref,
+) {
   final db = ref.watch(autolifeDatabaseProvider);
   final tenant = ref.watch(shellTenantIdProvider);
   final now = DateTime.now();
@@ -121,7 +141,8 @@ final todaySmokeEventsProvider =
               t.occurredAt.isSmallerThanValue(end),
         )
         ..orderBy([
-          (t) => OrderingTerm(expression: t.occurredAt, mode: OrderingMode.desc),
+          (t) =>
+              OrderingTerm(expression: t.occurredAt, mode: OrderingMode.desc),
         ]))
       .watch();
 });

@@ -1,15 +1,14 @@
 import 'package:drift/drift.dart';
 
-import 'membership_role_map.dart';
-
-/// Local cache of `public.membership`.
+/// Local cache of `public.memberships`.
 class MembershipCache extends Table {
-  TextColumn get id => text()();
   TextColumn get familyId => text()();
-  TextColumn get profileId => text()();
-  TextColumn get role => text().map(const MembershipRoleConverter())();
+  TextColumn get userId => text()();
+  TextColumn get role => text()();
+  DateTimeColumn get joinedAt => dateTime().nullable()();
+  DateTimeColumn get removedAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime()();
 
   @override
-  Set<Column> get primaryKey => {id};
+  Set<Column> get primaryKey => {familyId, userId};
 }

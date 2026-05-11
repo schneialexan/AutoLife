@@ -6,11 +6,7 @@ import '../services/offline_write_queue.dart';
 import '../sync/drift_offline_write_queue.dart';
 
 /// Sync direction for an integration instance (`connector_credential.direction`).
-enum IntegrationConnectorDirection {
-  oneWayIn,
-  oneWayOut,
-  twoWay,
-}
+enum IntegrationConnectorDirection { oneWayIn, oneWayOut, twoWay }
 
 extension IntegrationConnectorDirectionWire on IntegrationConnectorDirection {
   /// Wire / Postgres enum literal.
@@ -106,8 +102,7 @@ class OfflineAwareIntegrationConnector implements IntegrationConnector {
   }) async {
     final online = await _probeOnline();
     if (!online) {
-      final idem =
-          '$connectorId:${_tenant(tenant)}:${const Uuid().v4()}';
+      final idem = '$connectorId:${_tenant(tenant)}:${const Uuid().v4()}';
       return _offlineQueue.enqueue(
         OfflineWritePayloadBuilder.build(
           tenantId: _tenant(tenant),
@@ -115,10 +110,7 @@ class OfflineAwareIntegrationConnector implements IntegrationConnector {
           targetTable: connectorPushTargetTable,
           operation: 'insert',
           idempotencyKey: idem,
-          payload: {
-            'connector_id': connectorId,
-            'payload': payload,
-          },
+          payload: {'connector_id': connectorId, 'payload': payload},
         ),
       );
     }

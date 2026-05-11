@@ -5,8 +5,7 @@ class ConnectorRegistry {
   final Map<String, IntegrationConnector> _connectors = {};
 
   /// Sorted connector ids for deterministic UI lists.
-  List<String> get connectorIds =>
-      _connectors.keys.toList()..sort();
+  List<String> get connectorIds => _connectors.keys.toList()..sort();
 
   void register(IntegrationConnector connector) {
     final id = connector.connectorId;

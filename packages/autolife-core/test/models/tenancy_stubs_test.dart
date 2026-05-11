@@ -2,8 +2,12 @@ import 'package:autolife_core/autolife_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('Profile JSON round-trip and copyWith', () {
-    const original = Profile(id: 'p1', displayName: 'Alex', familyId: 'f1');
+  test('Profile JSON round-trip with active_family_id', () {
+    const original = Profile(
+      id: 'p1',
+      displayName: 'Alex',
+      activeFamilyId: 'f1',
+    );
     expect(Profile.fromJson(original.toJson()), original);
     final next = original.copyWith(displayName: 'Alexa');
     expect(next.displayName, 'Alexa');
@@ -11,24 +15,26 @@ void main() {
   });
 
   test('Family JSON round-trip and copyWith', () {
-    const original = Family(id: 'f1', displayName: 'The Smiths');
+    final original = Family(
+      id: 'f1',
+      name: 'The Smiths',
+      createdAt: DateTime.utc(2026, 1, 2),
+      updatedAt: DateTime.utc(2026, 1, 2),
+    );
     expect(Family.fromJson(original.toJson()), original);
-    final next = original.copyWith(displayName: 'Smith');
-    expect(next.displayName, 'Smith');
+    final next = original.copyWith(name: 'Smith');
+    expect(next.name, 'Smith');
   });
 
-  test('Membership JSON encodes Role as snake_case', () {
+  test('Membership JSON round-trip', () {
     final original = Membership(
-      id: 'm1',
       familyId: 'f1',
-      profileId: 'p1',
-      role: Role.admin,
+      userId: 'u1',
+      role: FamilyRole.partner,
+      joinedAt: DateTime.utc(2026, 1, 3),
+      updatedAt: DateTime.utc(2026, 1, 3),
     );
-    final json = original.toJson();
-    expect(json['role'], 'admin');
-    expect(Membership.fromJson(json), original);
-    final next = original.copyWith(role: Role.owner);
-    expect(next.role, Role.owner);
-    expect(next.familyId, original.familyId);
+    expect(Membership.fromJson(original.toJson()), original);
+    expect(original.role, FamilyRole.partner);
   });
 }

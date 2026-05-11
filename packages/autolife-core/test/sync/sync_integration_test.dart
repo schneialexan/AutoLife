@@ -12,11 +12,11 @@ class _RecordingGateway implements RemoteSyncGateway {
   Future<List<Map<String, dynamic>>> pullTable({
     required String tenantId,
     String? tenancyFamilyScopeId,
+    String? tenancyProfileScopeId,
     required String table,
     DateTime? updatedAfter,
     int limit = 200,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   Future<void> applyWrite({
@@ -37,6 +37,7 @@ class _PullingGateway implements RemoteSyncGateway {
   Future<List<Map<String, dynamic>>> pullTable({
     required String tenantId,
     String? tenancyFamilyScopeId,
+    String? tenancyProfileScopeId,
     required String table,
     DateTime? updatedAfter,
     int limit = 200,
@@ -87,7 +88,9 @@ SyncEngine _engine({
 void main() {
   test('merging emits conflict_detected when timestamps diverge', () async {
     final db = AutolifeDatabase.memory();
-    await db.into(db.systemEventCache).insert(
+    await db
+        .into(db.systemEventCache)
+        .insert(
           SystemEventCacheCompanion.insert(
             id: 'evt-1',
             tenantId: 'tenant-a',

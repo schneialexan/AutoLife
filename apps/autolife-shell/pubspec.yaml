@@ -7,6 +7,7 @@ environment:
   sdk: ^3.11.0
 
 dependencies:
+  app_links: ^6.4.0
   autolife_core:
     path: ../../packages/autolife-core
   autolife_ui:
@@ -17,7 +18,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.6.1
+  flutter_secure_storage: ^9.2.4
   supabase: ^2.10.0
+  url_launcher: ^6.3.2
   uuid: ^4.5.1
 
 dev_dependencies:

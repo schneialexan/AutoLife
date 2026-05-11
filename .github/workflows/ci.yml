@@ -40,6 +40,8 @@ jobs:
         run: |
           cd packages/autolife-core
           dart run build_runner build --delete-conflicting-outputs
+          dart run tool/generate_policy_matrix.dart
+          dart format lib/src/policy/
           cd ../..
           git diff --exit-code
 
@@ -103,6 +105,16 @@ jobs:
             --dart-define=SUPABASE_URL="${API_URL}" \
             --dart-define=SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY}" \
             --dart-define=AUTOLIFE_SMOKE_INTEGRATION_TEST=true
+
+      - name: autolife-shell phase 2.1 auth integration (anon)
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          cd apps/autolife-shell
+          flutter test integration_test/phase2_1_auth_test.dart -d linux \
+            --dart-define=SUPABASE_URL="${API_URL}" \
+            --dart-define=AUTOLIFE_SUPABASE_ANON_KEY="${ANON_KEY}"
 
       - name: Stop Supabase
         if: always()

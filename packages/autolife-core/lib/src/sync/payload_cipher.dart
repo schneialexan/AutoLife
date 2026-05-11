@@ -22,10 +22,7 @@ class PayloadCipher {
 
   Future<String> decryptUtf8(Uint8List blob) async {
     final box = _unpack(blob);
-    final clear = await _algo.decrypt(
-      box,
-      secretKey: _key,
-    );
+    final clear = await _algo.decrypt(box, secretKey: _key);
     return utf8.decode(clear);
   }
 

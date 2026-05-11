@@ -49,7 +49,10 @@ class DriftOfflineWriteQueue implements OfflineWriteQueue {
         op == null ||
         idem == null) {
       return Result.failure(
-        Failure(code: 'offline_write_missing_field', message: envelope.toString()),
+        Failure(
+          code: 'offline_write_missing_field',
+          message: envelope.toString(),
+        ),
       );
     }
     if (op != 'insert' && op != 'update' && op != 'delete') {
@@ -59,19 +62,25 @@ class DriftOfflineWriteQueue implements OfflineWriteQueue {
     }
     if (body is! Map) {
       return Result.failure(
-        Failure(code: 'offline_write_bad_payload', message: '${body.runtimeType}'),
+        Failure(
+          code: 'offline_write_bad_payload',
+          message: '${body.runtimeType}',
+        ),
       );
     }
-    final prior = await (_db.select(
-      _db.pendingWrites,
-    )..where(
-        (t) => t.tenantId.equals(tenantId) & t.idempotencyKey.equals(idem),
-      )).getSingleOrNull();
+    final prior =
+        await (_db.select(_db.pendingWrites)..where(
+              (t) =>
+                  t.tenantId.equals(tenantId) & t.idempotencyKey.equals(idem),
+            ))
+            .getSingleOrNull();
     if (prior != null) {
       return const Result.success(null);
     }
     final enc = await _cipher.encryptJson(Map<String, dynamic>.from(body));
-    await _db.into(_db.pendingWrites).insert(
+    await _db
+        .into(_db.pendingWrites)
+        .insert(
           PendingWritesCompanion.insert(
             tenantId: tenantId,
             actorId: actorId,
@@ -132,13 +141,12 @@ abstract final class OfflineWritePayloadBuilder {
     required String operation,
     required String idempotencyKey,
     required Map<String, dynamic> payload,
-  }) =>
-      {
-        OfflineWritePayloadKeys.tenantId: tenantId,
-        OfflineWritePayloadKeys.actorId: actorId,
-        OfflineWritePayloadKeys.targetTable: targetTable,
-        OfflineWritePayloadKeys.operation: operation,
-        OfflineWritePayloadKeys.idempotencyKey: idempotencyKey,
-        OfflineWritePayloadKeys.payload: payload,
-      };
+  }) => {
+    OfflineWritePayloadKeys.tenantId: tenantId,
+    OfflineWritePayloadKeys.actorId: actorId,
+    OfflineWritePayloadKeys.targetTable: targetTable,
+    OfflineWritePayloadKeys.operation: operation,
+    OfflineWritePayloadKeys.idempotencyKey: idempotencyKey,
+    OfflineWritePayloadKeys.payload: payload,
+  };
 }

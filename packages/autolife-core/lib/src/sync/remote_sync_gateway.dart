@@ -5,9 +5,12 @@ abstract class RemoteSyncGateway {
   Future<List<Map<String, dynamic>>> pullTable({
     required String tenantId,
 
-    /// When set (typical smoke shell): UUID of the `family` row + `family_id` on derived rows.
-    /// [tenantId] still scopes `system_event.tenant_id` (text slug).
+    /// When set: UUID of the active `families` row — scopes `families`/`memberships` pulls.
     String? tenancyFamilyScopeId,
+
+    /// When set: scopes `profile` pulls to `profile.id`.
+    String? tenancyProfileScopeId,
+
     required String table,
     DateTime? updatedAfter,
     int limit = 200,
@@ -30,11 +33,11 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
   Future<List<Map<String, dynamic>>> pullTable({
     required String tenantId,
     String? tenancyFamilyScopeId,
+    String? tenancyProfileScopeId,
     required String table,
     DateTime? updatedAfter,
     int limit = 200,
   }) async {
-    final familyScoped = tenancyFamilyScopeId ?? tenantId;
     if (table == 'event_delivery') {
       var q = _client
           .from('event_delivery')
@@ -47,14 +50,25 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
       return _rowsAsMaps(rows);
     }
 
+    if (table == 'families' || table == 'memberships') {
+      if (tenancyFamilyScopeId == null) {
+        return [];
+      }
+    } else if (table == 'profile') {
+      if (tenancyProfileScopeId == null) {
+        return [];
+      }
+    }
+
+    final familyScoped = tenancyFamilyScopeId ?? tenantId;
     var qb = _client.from(table).select();
     if (table == 'system_event') {
       qb = qb.eq('tenant_id', tenantId);
     } else if (table == 'profile') {
-      qb = qb.eq('family_id', familyScoped);
-    } else if (table == 'membership') {
-      qb = qb.eq('family_id', familyScoped);
-    } else if (table == 'family') {
+      qb = qb.eq('id', tenancyProfileScopeId!);
+    } else if (table == 'memberships') {
+      qb = qb.eq('family_id', familyScoped).isFilter('removed_at', null);
+    } else if (table == 'families') {
       qb = qb.eq('id', familyScoped);
     }
 
@@ -76,6 +90,23 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
         await _client.from(table).insert(payload);
         return;
       case 'update':
+        if (table == 'memberships') {
+          final familyId = payload['family_id'] as String?;
+          final userId = payload['user_id'] as String?;
+          if (familyId == null || userId == null) {
+            throw StateError('membership_update_requires_family_and_user_ids');
+          }
+          final patch = Map<String, dynamic>.from(payload)
+            ..remove('family_id')
+            ..remove('user_id')
+            ..remove('id');
+          await _client
+              .from(table)
+              .update(patch)
+              .eq('family_id', familyId)
+              .eq('user_id', userId);
+          return;
+        }
         final id = payload['id'] as String?;
         if (id == null) {
           throw StateError('update_payload_missing_id');
@@ -84,6 +115,19 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
         await _client.from(table).update(patch).eq('id', id);
         return;
       case 'delete':
+        if (table == 'memberships') {
+          final familyId = payload['family_id'] as String?;
+          final userId = payload['user_id'] as String?;
+          if (familyId == null || userId == null) {
+            throw StateError('membership_delete_requires_family_and_user_ids');
+          }
+          await _client
+              .from(table)
+              .delete()
+              .eq('family_id', familyId)
+              .eq('user_id', userId);
+          return;
+        }
         final id = payload['id'] as String?;
         if (id == null) {
           throw StateError('delete_payload_missing_id');
@@ -108,11 +152,11 @@ class NoopRemoteSyncGateway implements RemoteSyncGateway {
   Future<List<Map<String, dynamic>>> pullTable({
     required String tenantId,
     String? tenancyFamilyScopeId,
+    String? tenancyProfileScopeId,
     required String table,
     DateTime? updatedAfter,
     int limit = 200,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   Future<void> applyWrite({

@@ -5,14 +5,8 @@ void main() {
   group('LastWriterWinsResolver', () {
     test('favors newer updated_at', () {
       final r = LastWriterWinsResolver();
-      final local = {
-        'id': '1',
-        'updated_at': '2026-01-01T00:00:00.000Z',
-      };
-      final remote = {
-        'id': '1',
-        'updated_at': '2026-02-01T00:00:00.000Z',
-      };
+      final local = {'id': '1', 'updated_at': '2026-01-01T00:00:00.000Z'};
+      final remote = {'id': '1', 'updated_at': '2026-02-01T00:00:00.000Z'};
       expect(
         r.resolve(
           localRow: local,

@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 QueryExecutor openInMemoryConnection() => NativeDatabase.memory();
 
 QueryExecutor openFileConnection(String filename) => LazyDatabase(() async {
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dir.path, filename));
-      return NativeDatabase.createInBackground(file);
-    });
+  final dir = await getApplicationDocumentsDirectory();
+  final file = File(p.join(dir.path, filename));
+  return NativeDatabase.createInBackground(file);
+});

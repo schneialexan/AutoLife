@@ -1232,12 +1232,12 @@ class $ProfileCacheTable extends ProfileCache
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _familyIdMeta = const VerificationMeta(
-    'familyId',
+  static const VerificationMeta _activeFamilyIdMeta = const VerificationMeta(
+    'activeFamilyId',
   );
   @override
-  late final GeneratedColumn<String> familyId = GeneratedColumn<String>(
-    'family_id',
+  late final GeneratedColumn<String> activeFamilyId = GeneratedColumn<String>(
+    'active_family_id',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -1255,7 +1255,12 @@ class $ProfileCacheTable extends ProfileCache
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, displayName, familyId, updatedAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    displayName,
+    activeFamilyId,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1284,10 +1289,13 @@ class $ProfileCacheTable extends ProfileCache
     } else if (isInserting) {
       context.missing(_displayNameMeta);
     }
-    if (data.containsKey('family_id')) {
+    if (data.containsKey('active_family_id')) {
       context.handle(
-        _familyIdMeta,
-        familyId.isAcceptableOrUnknown(data['family_id']!, _familyIdMeta),
+        _activeFamilyIdMeta,
+        activeFamilyId.isAcceptableOrUnknown(
+          data['active_family_id']!,
+          _activeFamilyIdMeta,
+        ),
       );
     }
     if (data.containsKey('updated_at')) {
@@ -1315,9 +1323,9 @@ class $ProfileCacheTable extends ProfileCache
         DriftSqlType.string,
         data['${effectivePrefix}display_name'],
       )!,
-      familyId: attachedDatabase.typeMapping.read(
+      activeFamilyId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}family_id'],
+        data['${effectivePrefix}active_family_id'],
       ),
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -1336,12 +1344,12 @@ class ProfileCacheData extends DataClass
     implements Insertable<ProfileCacheData> {
   final String id;
   final String displayName;
-  final String? familyId;
+  final String? activeFamilyId;
   final DateTime updatedAt;
   const ProfileCacheData({
     required this.id,
     required this.displayName,
-    this.familyId,
+    this.activeFamilyId,
     required this.updatedAt,
   });
   @override
@@ -1349,8 +1357,8 @@ class ProfileCacheData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['display_name'] = Variable<String>(displayName);
-    if (!nullToAbsent || familyId != null) {
-      map['family_id'] = Variable<String>(familyId);
+    if (!nullToAbsent || activeFamilyId != null) {
+      map['active_family_id'] = Variable<String>(activeFamilyId);
     }
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1360,9 +1368,9 @@ class ProfileCacheData extends DataClass
     return ProfileCacheCompanion(
       id: Value(id),
       displayName: Value(displayName),
-      familyId: familyId == null && nullToAbsent
+      activeFamilyId: activeFamilyId == null && nullToAbsent
           ? const Value.absent()
-          : Value(familyId),
+          : Value(activeFamilyId),
       updatedAt: Value(updatedAt),
     );
   }
@@ -1375,7 +1383,7 @@ class ProfileCacheData extends DataClass
     return ProfileCacheData(
       id: serializer.fromJson<String>(json['id']),
       displayName: serializer.fromJson<String>(json['displayName']),
-      familyId: serializer.fromJson<String?>(json['familyId']),
+      activeFamilyId: serializer.fromJson<String?>(json['activeFamilyId']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
@@ -1385,7 +1393,7 @@ class ProfileCacheData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'displayName': serializer.toJson<String>(displayName),
-      'familyId': serializer.toJson<String?>(familyId),
+      'activeFamilyId': serializer.toJson<String?>(activeFamilyId),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
@@ -1393,12 +1401,14 @@ class ProfileCacheData extends DataClass
   ProfileCacheData copyWith({
     String? id,
     String? displayName,
-    Value<String?> familyId = const Value.absent(),
+    Value<String?> activeFamilyId = const Value.absent(),
     DateTime? updatedAt,
   }) => ProfileCacheData(
     id: id ?? this.id,
     displayName: displayName ?? this.displayName,
-    familyId: familyId.present ? familyId.value : this.familyId,
+    activeFamilyId: activeFamilyId.present
+        ? activeFamilyId.value
+        : this.activeFamilyId,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   ProfileCacheData copyWithCompanion(ProfileCacheCompanion data) {
@@ -1407,7 +1417,9 @@ class ProfileCacheData extends DataClass
       displayName: data.displayName.present
           ? data.displayName.value
           : this.displayName,
-      familyId: data.familyId.present ? data.familyId.value : this.familyId,
+      activeFamilyId: data.activeFamilyId.present
+          ? data.activeFamilyId.value
+          : this.activeFamilyId,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -1417,41 +1429,41 @@ class ProfileCacheData extends DataClass
     return (StringBuffer('ProfileCacheData(')
           ..write('id: $id, ')
           ..write('displayName: $displayName, ')
-          ..write('familyId: $familyId, ')
+          ..write('activeFamilyId: $activeFamilyId, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, displayName, familyId, updatedAt);
+  int get hashCode => Object.hash(id, displayName, activeFamilyId, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ProfileCacheData &&
           other.id == this.id &&
           other.displayName == this.displayName &&
-          other.familyId == this.familyId &&
+          other.activeFamilyId == this.activeFamilyId &&
           other.updatedAt == this.updatedAt);
 }
 
 class ProfileCacheCompanion extends UpdateCompanion<ProfileCacheData> {
   final Value<String> id;
   final Value<String> displayName;
-  final Value<String?> familyId;
+  final Value<String?> activeFamilyId;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const ProfileCacheCompanion({
     this.id = const Value.absent(),
     this.displayName = const Value.absent(),
-    this.familyId = const Value.absent(),
+    this.activeFamilyId = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   ProfileCacheCompanion.insert({
     required String id,
     required String displayName,
-    this.familyId = const Value.absent(),
+    this.activeFamilyId = const Value.absent(),
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1460,14 +1472,14 @@ class ProfileCacheCompanion extends UpdateCompanion<ProfileCacheData> {
   static Insertable<ProfileCacheData> custom({
     Expression<String>? id,
     Expression<String>? displayName,
-    Expression<String>? familyId,
+    Expression<String>? activeFamilyId,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (displayName != null) 'display_name': displayName,
-      if (familyId != null) 'family_id': familyId,
+      if (activeFamilyId != null) 'active_family_id': activeFamilyId,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1476,14 +1488,14 @@ class ProfileCacheCompanion extends UpdateCompanion<ProfileCacheData> {
   ProfileCacheCompanion copyWith({
     Value<String>? id,
     Value<String>? displayName,
-    Value<String?>? familyId,
+    Value<String?>? activeFamilyId,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
     return ProfileCacheCompanion(
       id: id ?? this.id,
       displayName: displayName ?? this.displayName,
-      familyId: familyId ?? this.familyId,
+      activeFamilyId: activeFamilyId ?? this.activeFamilyId,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1498,8 +1510,8 @@ class ProfileCacheCompanion extends UpdateCompanion<ProfileCacheData> {
     if (displayName.present) {
       map['display_name'] = Variable<String>(displayName.value);
     }
-    if (familyId.present) {
-      map['family_id'] = Variable<String>(familyId.value);
+    if (activeFamilyId.present) {
+      map['active_family_id'] = Variable<String>(activeFamilyId.value);
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
@@ -1515,7 +1527,7 @@ class ProfileCacheCompanion extends UpdateCompanion<ProfileCacheData> {
     return (StringBuffer('ProfileCacheCompanion(')
           ..write('id: $id, ')
           ..write('displayName: $displayName, ')
-          ..write('familyId: $familyId, ')
+          ..write('activeFamilyId: $activeFamilyId, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1538,12 +1550,10 @@ class $FamilyCacheTable extends FamilyCache
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _displayNameMeta = const VerificationMeta(
-    'displayName',
-  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
-    'display_name',
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -1561,7 +1571,7 @@ class $FamilyCacheTable extends FamilyCache
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, displayName, updatedAt];
+  List<GeneratedColumn> get $columns => [id, name, updatedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1579,16 +1589,13 @@ class $FamilyCacheTable extends FamilyCache
     } else if (isInserting) {
       context.missing(_idMeta);
     }
-    if (data.containsKey('display_name')) {
+    if (data.containsKey('name')) {
       context.handle(
-        _displayNameMeta,
-        displayName.isAcceptableOrUnknown(
-          data['display_name']!,
-          _displayNameMeta,
-        ),
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
     } else if (isInserting) {
-      context.missing(_displayNameMeta);
+      context.missing(_nameMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(
@@ -1611,9 +1618,9 @@ class $FamilyCacheTable extends FamilyCache
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
-      displayName: attachedDatabase.typeMapping.read(
+      name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}display_name'],
+        data['${effectivePrefix}name'],
       )!,
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -1630,18 +1637,18 @@ class $FamilyCacheTable extends FamilyCache
 
 class FamilyCacheData extends DataClass implements Insertable<FamilyCacheData> {
   final String id;
-  final String displayName;
+  final String name;
   final DateTime updatedAt;
   const FamilyCacheData({
     required this.id,
-    required this.displayName,
+    required this.name,
     required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['display_name'] = Variable<String>(displayName);
+    map['name'] = Variable<String>(name);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
@@ -1649,7 +1656,7 @@ class FamilyCacheData extends DataClass implements Insertable<FamilyCacheData> {
   FamilyCacheCompanion toCompanion(bool nullToAbsent) {
     return FamilyCacheCompanion(
       id: Value(id),
-      displayName: Value(displayName),
+      name: Value(name),
       updatedAt: Value(updatedAt),
     );
   }
@@ -1661,7 +1668,7 @@ class FamilyCacheData extends DataClass implements Insertable<FamilyCacheData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FamilyCacheData(
       id: serializer.fromJson<String>(json['id']),
-      displayName: serializer.fromJson<String>(json['displayName']),
+      name: serializer.fromJson<String>(json['name']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
@@ -1670,26 +1677,21 @@ class FamilyCacheData extends DataClass implements Insertable<FamilyCacheData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'displayName': serializer.toJson<String>(displayName),
+      'name': serializer.toJson<String>(name),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
-  FamilyCacheData copyWith({
-    String? id,
-    String? displayName,
-    DateTime? updatedAt,
-  }) => FamilyCacheData(
-    id: id ?? this.id,
-    displayName: displayName ?? this.displayName,
-    updatedAt: updatedAt ?? this.updatedAt,
-  );
+  FamilyCacheData copyWith({String? id, String? name, DateTime? updatedAt}) =>
+      FamilyCacheData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
   FamilyCacheData copyWithCompanion(FamilyCacheCompanion data) {
     return FamilyCacheData(
       id: data.id.present ? data.id.value : this.id,
-      displayName: data.displayName.present
-          ? data.displayName.value
-          : this.displayName,
+      name: data.name.present ? data.name.value : this.name,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -1698,51 +1700,51 @@ class FamilyCacheData extends DataClass implements Insertable<FamilyCacheData> {
   String toString() {
     return (StringBuffer('FamilyCacheData(')
           ..write('id: $id, ')
-          ..write('displayName: $displayName, ')
+          ..write('name: $name, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, displayName, updatedAt);
+  int get hashCode => Object.hash(id, name, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is FamilyCacheData &&
           other.id == this.id &&
-          other.displayName == this.displayName &&
+          other.name == this.name &&
           other.updatedAt == this.updatedAt);
 }
 
 class FamilyCacheCompanion extends UpdateCompanion<FamilyCacheData> {
   final Value<String> id;
-  final Value<String> displayName;
+  final Value<String> name;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const FamilyCacheCompanion({
     this.id = const Value.absent(),
-    this.displayName = const Value.absent(),
+    this.name = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FamilyCacheCompanion.insert({
     required String id,
-    required String displayName,
+    required String name,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
-       displayName = Value(displayName),
+       name = Value(name),
        updatedAt = Value(updatedAt);
   static Insertable<FamilyCacheData> custom({
     Expression<String>? id,
-    Expression<String>? displayName,
+    Expression<String>? name,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (displayName != null) 'display_name': displayName,
+      if (name != null) 'name': name,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1750,13 +1752,13 @@ class FamilyCacheCompanion extends UpdateCompanion<FamilyCacheData> {
 
   FamilyCacheCompanion copyWith({
     Value<String>? id,
-    Value<String>? displayName,
+    Value<String>? name,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
     return FamilyCacheCompanion(
       id: id ?? this.id,
-      displayName: displayName ?? this.displayName,
+      name: name ?? this.name,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1768,8 +1770,8 @@ class FamilyCacheCompanion extends UpdateCompanion<FamilyCacheData> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (displayName.present) {
-      map['display_name'] = Variable<String>(displayName.value);
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
@@ -1784,7 +1786,7 @@ class FamilyCacheCompanion extends UpdateCompanion<FamilyCacheData> {
   String toString() {
     return (StringBuffer('FamilyCacheCompanion(')
           ..write('id: $id, ')
-          ..write('displayName: $displayName, ')
+          ..write('name: $name, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1798,15 +1800,6 @@ class $MembershipCacheTable extends MembershipCache
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $MembershipCacheTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _familyIdMeta = const VerificationMeta(
     'familyId',
   );
@@ -1818,26 +1811,46 @@ class $MembershipCacheTable extends MembershipCache
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _profileIdMeta = const VerificationMeta(
-    'profileId',
-  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
-  late final GeneratedColumn<String> profileId = GeneratedColumn<String>(
-    'profile_id',
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
   @override
-  late final GeneratedColumnWithTypeConverter<Role, String> role =
-      GeneratedColumn<String>(
-        'role',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<Role>($MembershipCacheTable.$converterrole);
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _joinedAtMeta = const VerificationMeta(
+    'joinedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> joinedAt = GeneratedColumn<DateTime>(
+    'joined_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _removedAtMeta = const VerificationMeta(
+    'removedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> removedAt = GeneratedColumn<DateTime>(
+    'removed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -1851,10 +1864,11 @@ class $MembershipCacheTable extends MembershipCache
   );
   @override
   List<GeneratedColumn> get $columns => [
-    id,
     familyId,
-    profileId,
+    userId,
     role,
+    joinedAt,
+    removedAt,
     updatedAt,
   ];
   @override
@@ -1869,11 +1883,6 @@ class $MembershipCacheTable extends MembershipCache
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
     if (data.containsKey('family_id')) {
       context.handle(
         _familyIdMeta,
@@ -1882,13 +1891,33 @@ class $MembershipCacheTable extends MembershipCache
     } else if (isInserting) {
       context.missing(_familyIdMeta);
     }
-    if (data.containsKey('profile_id')) {
+    if (data.containsKey('user_id')) {
       context.handle(
-        _profileIdMeta,
-        profileId.isAcceptableOrUnknown(data['profile_id']!, _profileIdMeta),
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_profileIdMeta);
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    if (data.containsKey('joined_at')) {
+      context.handle(
+        _joinedAtMeta,
+        joinedAt.isAcceptableOrUnknown(data['joined_at']!, _joinedAtMeta),
+      );
+    }
+    if (data.containsKey('removed_at')) {
+      context.handle(
+        _removedAtMeta,
+        removedAt.isAcceptableOrUnknown(data['removed_at']!, _removedAtMeta),
+      );
     }
     if (data.containsKey('updated_at')) {
       context.handle(
@@ -1902,28 +1931,30 @@ class $MembershipCacheTable extends MembershipCache
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {familyId, userId};
   @override
   MembershipCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MembershipCacheData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
       familyId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}family_id'],
       )!,
-      profileId: attachedDatabase.typeMapping.read(
+      userId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}profile_id'],
+        data['${effectivePrefix}user_id'],
       )!,
-      role: $MembershipCacheTable.$converterrole.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}role'],
-        )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      joinedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}joined_at'],
+      ),
+      removedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}removed_at'],
       ),
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -1936,35 +1967,35 @@ class $MembershipCacheTable extends MembershipCache
   $MembershipCacheTable createAlias(String alias) {
     return $MembershipCacheTable(attachedDatabase, alias);
   }
-
-  static TypeConverter<Role, String> $converterrole =
-      const MembershipRoleConverter();
 }
 
 class MembershipCacheData extends DataClass
     implements Insertable<MembershipCacheData> {
-  final String id;
   final String familyId;
-  final String profileId;
-  final Role role;
+  final String userId;
+  final String role;
+  final DateTime? joinedAt;
+  final DateTime? removedAt;
   final DateTime updatedAt;
   const MembershipCacheData({
-    required this.id,
     required this.familyId,
-    required this.profileId,
+    required this.userId,
     required this.role,
+    this.joinedAt,
+    this.removedAt,
     required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
     map['family_id'] = Variable<String>(familyId);
-    map['profile_id'] = Variable<String>(profileId);
-    {
-      map['role'] = Variable<String>(
-        $MembershipCacheTable.$converterrole.toSql(role),
-      );
+    map['user_id'] = Variable<String>(userId);
+    map['role'] = Variable<String>(role);
+    if (!nullToAbsent || joinedAt != null) {
+      map['joined_at'] = Variable<DateTime>(joinedAt);
+    }
+    if (!nullToAbsent || removedAt != null) {
+      map['removed_at'] = Variable<DateTime>(removedAt);
     }
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1972,10 +2003,15 @@ class MembershipCacheData extends DataClass
 
   MembershipCacheCompanion toCompanion(bool nullToAbsent) {
     return MembershipCacheCompanion(
-      id: Value(id),
       familyId: Value(familyId),
-      profileId: Value(profileId),
+      userId: Value(userId),
       role: Value(role),
+      joinedAt: joinedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(joinedAt),
+      removedAt: removedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(removedAt),
       updatedAt: Value(updatedAt),
     );
   }
@@ -1986,10 +2022,11 @@ class MembershipCacheData extends DataClass
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MembershipCacheData(
-      id: serializer.fromJson<String>(json['id']),
       familyId: serializer.fromJson<String>(json['familyId']),
-      profileId: serializer.fromJson<String>(json['profileId']),
-      role: serializer.fromJson<Role>(json['role']),
+      userId: serializer.fromJson<String>(json['userId']),
+      role: serializer.fromJson<String>(json['role']),
+      joinedAt: serializer.fromJson<DateTime?>(json['joinedAt']),
+      removedAt: serializer.fromJson<DateTime?>(json['removedAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
@@ -1997,33 +2034,37 @@ class MembershipCacheData extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
       'familyId': serializer.toJson<String>(familyId),
-      'profileId': serializer.toJson<String>(profileId),
-      'role': serializer.toJson<Role>(role),
+      'userId': serializer.toJson<String>(userId),
+      'role': serializer.toJson<String>(role),
+      'joinedAt': serializer.toJson<DateTime?>(joinedAt),
+      'removedAt': serializer.toJson<DateTime?>(removedAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   MembershipCacheData copyWith({
-    String? id,
     String? familyId,
-    String? profileId,
-    Role? role,
+    String? userId,
+    String? role,
+    Value<DateTime?> joinedAt = const Value.absent(),
+    Value<DateTime?> removedAt = const Value.absent(),
     DateTime? updatedAt,
   }) => MembershipCacheData(
-    id: id ?? this.id,
     familyId: familyId ?? this.familyId,
-    profileId: profileId ?? this.profileId,
+    userId: userId ?? this.userId,
     role: role ?? this.role,
+    joinedAt: joinedAt.present ? joinedAt.value : this.joinedAt,
+    removedAt: removedAt.present ? removedAt.value : this.removedAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   MembershipCacheData copyWithCompanion(MembershipCacheCompanion data) {
     return MembershipCacheData(
-      id: data.id.present ? data.id.value : this.id,
       familyId: data.familyId.present ? data.familyId.value : this.familyId,
-      profileId: data.profileId.present ? data.profileId.value : this.profileId,
+      userId: data.userId.present ? data.userId.value : this.userId,
       role: data.role.present ? data.role.value : this.role,
+      joinedAt: data.joinedAt.present ? data.joinedAt.value : this.joinedAt,
+      removedAt: data.removedAt.present ? data.removedAt.value : this.removedAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -2031,86 +2072,95 @@ class MembershipCacheData extends DataClass
   @override
   String toString() {
     return (StringBuffer('MembershipCacheData(')
-          ..write('id: $id, ')
           ..write('familyId: $familyId, ')
-          ..write('profileId: $profileId, ')
+          ..write('userId: $userId, ')
           ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt, ')
+          ..write('removedAt: $removedAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, familyId, profileId, role, updatedAt);
+  int get hashCode =>
+      Object.hash(familyId, userId, role, joinedAt, removedAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MembershipCacheData &&
-          other.id == this.id &&
           other.familyId == this.familyId &&
-          other.profileId == this.profileId &&
+          other.userId == this.userId &&
           other.role == this.role &&
+          other.joinedAt == this.joinedAt &&
+          other.removedAt == this.removedAt &&
           other.updatedAt == this.updatedAt);
 }
 
 class MembershipCacheCompanion extends UpdateCompanion<MembershipCacheData> {
-  final Value<String> id;
   final Value<String> familyId;
-  final Value<String> profileId;
-  final Value<Role> role;
+  final Value<String> userId;
+  final Value<String> role;
+  final Value<DateTime?> joinedAt;
+  final Value<DateTime?> removedAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
   const MembershipCacheCompanion({
-    this.id = const Value.absent(),
     this.familyId = const Value.absent(),
-    this.profileId = const Value.absent(),
+    this.userId = const Value.absent(),
     this.role = const Value.absent(),
+    this.joinedAt = const Value.absent(),
+    this.removedAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MembershipCacheCompanion.insert({
-    required String id,
     required String familyId,
-    required String profileId,
-    required Role role,
+    required String userId,
+    required String role,
+    this.joinedAt = const Value.absent(),
+    this.removedAt = const Value.absent(),
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       familyId = Value(familyId),
-       profileId = Value(profileId),
+  }) : familyId = Value(familyId),
+       userId = Value(userId),
        role = Value(role),
        updatedAt = Value(updatedAt);
   static Insertable<MembershipCacheData> custom({
-    Expression<String>? id,
     Expression<String>? familyId,
-    Expression<String>? profileId,
+    Expression<String>? userId,
     Expression<String>? role,
+    Expression<DateTime>? joinedAt,
+    Expression<DateTime>? removedAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
       if (familyId != null) 'family_id': familyId,
-      if (profileId != null) 'profile_id': profileId,
+      if (userId != null) 'user_id': userId,
       if (role != null) 'role': role,
+      if (joinedAt != null) 'joined_at': joinedAt,
+      if (removedAt != null) 'removed_at': removedAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   MembershipCacheCompanion copyWith({
-    Value<String>? id,
     Value<String>? familyId,
-    Value<String>? profileId,
-    Value<Role>? role,
+    Value<String>? userId,
+    Value<String>? role,
+    Value<DateTime?>? joinedAt,
+    Value<DateTime?>? removedAt,
     Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
     return MembershipCacheCompanion(
-      id: id ?? this.id,
       familyId: familyId ?? this.familyId,
-      profileId: profileId ?? this.profileId,
+      userId: userId ?? this.userId,
       role: role ?? this.role,
+      joinedAt: joinedAt ?? this.joinedAt,
+      removedAt: removedAt ?? this.removedAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -2119,19 +2169,20 @@ class MembershipCacheCompanion extends UpdateCompanion<MembershipCacheData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
     if (familyId.present) {
       map['family_id'] = Variable<String>(familyId.value);
     }
-    if (profileId.present) {
-      map['profile_id'] = Variable<String>(profileId.value);
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
     }
     if (role.present) {
-      map['role'] = Variable<String>(
-        $MembershipCacheTable.$converterrole.toSql(role.value),
-      );
+      map['role'] = Variable<String>(role.value);
+    }
+    if (joinedAt.present) {
+      map['joined_at'] = Variable<DateTime>(joinedAt.value);
+    }
+    if (removedAt.present) {
+      map['removed_at'] = Variable<DateTime>(removedAt.value);
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
@@ -2145,10 +2196,11 @@ class MembershipCacheCompanion extends UpdateCompanion<MembershipCacheData> {
   @override
   String toString() {
     return (StringBuffer('MembershipCacheCompanion(')
-          ..write('id: $id, ')
           ..write('familyId: $familyId, ')
-          ..write('profileId: $profileId, ')
+          ..write('userId: $userId, ')
           ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt, ')
+          ..write('removedAt: $removedAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3514,7 +3566,7 @@ typedef $$ProfileCacheTableCreateCompanionBuilder =
     ProfileCacheCompanion Function({
       required String id,
       required String displayName,
-      Value<String?> familyId,
+      Value<String?> activeFamilyId,
       required DateTime updatedAt,
       Value<int> rowid,
     });
@@ -3522,7 +3574,7 @@ typedef $$ProfileCacheTableUpdateCompanionBuilder =
     ProfileCacheCompanion Function({
       Value<String> id,
       Value<String> displayName,
-      Value<String?> familyId,
+      Value<String?> activeFamilyId,
       Value<DateTime> updatedAt,
       Value<int> rowid,
     });
@@ -3546,8 +3598,8 @@ class $$ProfileCacheTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get familyId => $composableBuilder(
-    column: $table.familyId,
+  ColumnFilters<String> get activeFamilyId => $composableBuilder(
+    column: $table.activeFamilyId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3576,8 +3628,8 @@ class $$ProfileCacheTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get familyId => $composableBuilder(
-    column: $table.familyId,
+  ColumnOrderings<String> get activeFamilyId => $composableBuilder(
+    column: $table.activeFamilyId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3604,8 +3656,10 @@ class $$ProfileCacheTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get familyId =>
-      $composableBuilder(column: $table.familyId, builder: (column) => column);
+  GeneratedColumn<String> get activeFamilyId => $composableBuilder(
+    column: $table.activeFamilyId,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -3650,13 +3704,13 @@ class $$ProfileCacheTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<String> displayName = const Value.absent(),
-                Value<String?> familyId = const Value.absent(),
+                Value<String?> activeFamilyId = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ProfileCacheCompanion(
                 id: id,
                 displayName: displayName,
-                familyId: familyId,
+                activeFamilyId: activeFamilyId,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
@@ -3664,13 +3718,13 @@ class $$ProfileCacheTableTableManager
               ({
                 required String id,
                 required String displayName,
-                Value<String?> familyId = const Value.absent(),
+                Value<String?> activeFamilyId = const Value.absent(),
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
               }) => ProfileCacheCompanion.insert(
                 id: id,
                 displayName: displayName,
-                familyId: familyId,
+                activeFamilyId: activeFamilyId,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
@@ -3706,14 +3760,14 @@ typedef $$ProfileCacheTableProcessedTableManager =
 typedef $$FamilyCacheTableCreateCompanionBuilder =
     FamilyCacheCompanion Function({
       required String id,
-      required String displayName,
+      required String name,
       required DateTime updatedAt,
       Value<int> rowid,
     });
 typedef $$FamilyCacheTableUpdateCompanionBuilder =
     FamilyCacheCompanion Function({
       Value<String> id,
-      Value<String> displayName,
+      Value<String> name,
       Value<DateTime> updatedAt,
       Value<int> rowid,
     });
@@ -3732,8 +3786,8 @@ class $$FamilyCacheTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get displayName => $composableBuilder(
-    column: $table.displayName,
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3757,8 +3811,8 @@ class $$FamilyCacheTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get displayName => $composableBuilder(
-    column: $table.displayName,
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3780,10 +3834,8 @@ class $$FamilyCacheTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get displayName => $composableBuilder(
-    column: $table.displayName,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -3825,24 +3877,24 @@ class $$FamilyCacheTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
-                Value<String> displayName = const Value.absent(),
+                Value<String> name = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FamilyCacheCompanion(
                 id: id,
-                displayName: displayName,
+                name: name,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String id,
-                required String displayName,
+                required String name,
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
               }) => FamilyCacheCompanion.insert(
                 id: id,
-                displayName: displayName,
+                name: name,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
@@ -3873,19 +3925,21 @@ typedef $$FamilyCacheTableProcessedTableManager =
     >;
 typedef $$MembershipCacheTableCreateCompanionBuilder =
     MembershipCacheCompanion Function({
-      required String id,
       required String familyId,
-      required String profileId,
-      required Role role,
+      required String userId,
+      required String role,
+      Value<DateTime?> joinedAt,
+      Value<DateTime?> removedAt,
       required DateTime updatedAt,
       Value<int> rowid,
     });
 typedef $$MembershipCacheTableUpdateCompanionBuilder =
     MembershipCacheCompanion Function({
-      Value<String> id,
       Value<String> familyId,
-      Value<String> profileId,
-      Value<Role> role,
+      Value<String> userId,
+      Value<String> role,
+      Value<DateTime?> joinedAt,
+      Value<DateTime?> removedAt,
       Value<DateTime> updatedAt,
       Value<int> rowid,
     });
@@ -3899,26 +3953,30 @@ class $$MembershipCacheTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<String> get familyId => $composableBuilder(
     column: $table.familyId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get profileId => $composableBuilder(
-    column: $table.profileId,
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<Role, Role, String> get role =>
-      $composableBuilder(
-        column: $table.role,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get removedAt => $composableBuilder(
+    column: $table.removedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
@@ -3935,23 +3993,28 @@ class $$MembershipCacheTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get familyId => $composableBuilder(
     column: $table.familyId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get profileId => $composableBuilder(
-    column: $table.profileId,
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<String> get role => $composableBuilder(
     column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get removedAt => $composableBuilder(
+    column: $table.removedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -3970,17 +4033,20 @@ class $$MembershipCacheTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
   GeneratedColumn<String> get familyId =>
       $composableBuilder(column: $table.familyId, builder: (column) => column);
 
-  GeneratedColumn<String> get profileId =>
-      $composableBuilder(column: $table.profileId, builder: (column) => column);
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<Role, String> get role =>
+  GeneratedColumn<String> get role =>
       $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get joinedAt =>
+      $composableBuilder(column: $table.joinedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get removedAt =>
+      $composableBuilder(column: $table.removedAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -4023,33 +4089,37 @@ class $$MembershipCacheTableTableManager
               $$MembershipCacheTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<String> id = const Value.absent(),
                 Value<String> familyId = const Value.absent(),
-                Value<String> profileId = const Value.absent(),
-                Value<Role> role = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<DateTime?> joinedAt = const Value.absent(),
+                Value<DateTime?> removedAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MembershipCacheCompanion(
-                id: id,
                 familyId: familyId,
-                profileId: profileId,
+                userId: userId,
                 role: role,
+                joinedAt: joinedAt,
+                removedAt: removedAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required String id,
                 required String familyId,
-                required String profileId,
-                required Role role,
+                required String userId,
+                required String role,
+                Value<DateTime?> joinedAt = const Value.absent(),
+                Value<DateTime?> removedAt = const Value.absent(),
                 required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
               }) => MembershipCacheCompanion.insert(
-                id: id,
                 familyId: familyId,
-                profileId: profileId,
+                userId: userId,
                 role: role,
+                joinedAt: joinedAt,
+                removedAt: removedAt,
                 updatedAt: updatedAt,
                 rowid: rowid,
               ),

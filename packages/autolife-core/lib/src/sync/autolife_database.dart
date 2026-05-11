@@ -1,13 +1,11 @@
 import 'package:drift/drift.dart';
 
 import '../models/event_delivery_status.dart';
-import '../models/role.dart';
 import 'database_connection.dart';
 import 'tables/event_delivery_cache.dart';
 import 'tables/event_delivery_status_map.dart';
 import 'tables/family_cache.dart';
 import 'tables/membership_cache.dart';
-import 'tables/membership_role_map.dart';
 import 'tables/pending_write.dart';
 import 'tables/profile_cache.dart';
 import 'tables/system_event_cache.dart';
@@ -37,5 +35,19 @@ class AutolifeDatabase extends _$AutolifeDatabase {
       AutolifeDatabase(openFileConnection(filename));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.deleteTable('family_cache');
+        await migrator.deleteTable('membership_cache');
+        await migrator.deleteTable('profile_cache');
+        await migrator.createTable(familyCache);
+        await migrator.createTable(membershipCache);
+        await migrator.createTable(profileCache);
+      }
+    },
+  );
 }

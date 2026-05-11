@@ -84,7 +84,8 @@ class CallbackConflictResolver implements ConflictResolver {
     required String? actorRole,
     DateTime? localUpdated,
     DateTime? remoteUpdated,
-  }) _fn;
+  })
+  _fn;
 
   @override
   ConflictWinner resolve({

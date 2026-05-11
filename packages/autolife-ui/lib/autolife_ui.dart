@@ -11,6 +11,7 @@ export 'src/tokens/shadows.dart';
 export 'src/tokens/spacing.dart';
 export 'src/tokens/typography.dart';
 export 'src/widgets/auto_life_app_bar.dart';
+export 'src/widgets/auto_life_auth_fields.dart';
 export 'src/widgets/auto_life_bottom_nav_shell.dart';
 export 'src/widgets/auto_life_button.dart';
 export 'src/widgets/auto_life_empty_state.dart';

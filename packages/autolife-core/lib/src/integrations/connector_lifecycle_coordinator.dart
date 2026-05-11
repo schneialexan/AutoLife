@@ -52,10 +52,7 @@ class ConnectorLifecycleCoordinator {
       failure: (_) => 'failure',
       orElse: () => 'failure',
     );
-    final err = result.maybeWhen(
-      failure: (f) => f.message,
-      orElse: () => null,
-    );
+    final err = result.maybeWhen(failure: (f) => f.message, orElse: () => null);
     await _audit.log(
       tenantId: _tenant(tenant),
       connectorId: connectorId,
@@ -416,7 +413,10 @@ class ConnectorLifecycleCoordinator {
       );
       return miss;
     }
-    final result = await connector.pushChanges(tenant: tenant, payload: payload);
+    final result = await connector.pushChanges(
+      tenant: tenant,
+      payload: payload,
+    );
     await _auditRow(
       tenant: tenant,
       connectorId: connectorId,

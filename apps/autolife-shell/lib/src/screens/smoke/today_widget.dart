@@ -54,8 +54,8 @@ class TodayWidget extends ConsumerWidget {
           error: (e, _) => Text(
             'Error: $e',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.error,
-                ),
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
         ),
       ],

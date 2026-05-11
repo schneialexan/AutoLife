@@ -103,8 +103,7 @@ class _FakeIntegrationConnector implements IntegrationConnector {
   Future<Result<void>> pushChanges({
     Tenant? tenant,
     required Map<String, dynamic> payload,
-  }) async =>
-      _voidOk();
+  }) async => _voidOk();
 
   @override
   Future<Result<void>> refresh({Tenant? tenant}) async => _voidOk();

@@ -20,6 +20,10 @@ scripts:
     run: dart format --set-exit-if-changed .
     description: Verify formatting from the repository root.
 
+  generate-policy-matrix:
+    run: melos exec -c 1 --scope=autolife_core -- "dart pub get && dart run tool/generate_policy_matrix.dart"
+    description: Regenerate policy YAML → Dart + migration seed markers.
+
   test:core:
     # `dart test` cannot load this package's barrel (Flutter / path_provider / drift); use Flutter's test VM.
     run: melos exec -c 1 --fail-fast --scope=autolife_core --dir-exists=test -- flutter test
