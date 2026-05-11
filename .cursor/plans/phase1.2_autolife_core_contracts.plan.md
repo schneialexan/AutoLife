@@ -1,8 +1,7 @@
 ---
 name: phase1.2_autolife_core_contracts
 overview: Define the canonical shared domain models, event schema, and service interfaces in packages/autolife-core that every app, edge function, and later phase must consume rather than redefining.
-phase: 1.2
-gate_owner: Phase 1 Gate
+todos: []
 isProject: false
 ---
 
