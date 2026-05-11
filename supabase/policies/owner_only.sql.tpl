@@ -1,0 +1,7 @@
+-- Template: owner_only
+-- Parameters: __TABLE__, __FAMILY_COL__
+-- Intent: allow when the caller is the family owner for the row''s family (memberships.role = owner).
+--
+-- Example (UPDATE USING / WITH CHECK):
+--   USING (public.is_owner_of(__TABLE__.__FAMILY_COL__))
+--   WITH CHECK (public.is_owner_of(__TABLE__.__FAMILY_COL__))

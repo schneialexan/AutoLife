@@ -1,0 +1,8 @@
+-- Template: per_family_scope
+-- Parameters: __TABLE__, __FAMILY_COL__ (uuid, references families.id)
+-- Intent: allow the operation when the caller is an active member of the family identified by __FAMILY_COL__.
+--
+-- Example (SELECT):
+--   USING (public.is_member_of(__TABLE__.__FAMILY_COL__))
+--
+-- Bind __TABLE__ in policy name / qual (PostgreSQL does not parameterize identifiers in CREATE POLICY).

@@ -1,0 +1,72 @@
+# Canonical registry for scripts/policy_drift_check.dart — tables with RLS enabled in `public`.
+# Each entry lists exact pg_policies.policyname values expected after migrations.
+#
+# Template names appear in COMMENT ON POLICY (see docs/rls-templates.md).
+
+version: 1
+
+tables:
+  system_event:
+    policies:
+      - system_event_insert_self
+      - system_event_select_self
+
+  event_delivery:
+    policies: []
+
+  connector_credential:
+    policies: []
+
+  connector_event:
+    policies: []
+
+  families:
+    policies:
+      - families_select_authenticated
+      - families_insert_authenticated
+      - families_update_family_admin
+
+  memberships:
+    policies:
+      - memberships_select_family
+      - memberships_insert_self
+      - memberships_update_self
+
+  family_invitations:
+    policies:
+      - family_invitations_select_members
+      - family_invitations_select_recipient
+      - family_invitations_insert_member
+      - family_invitations_update_inviter
+
+  profile:
+    policies:
+      - profile_select_own
+      - profile_update_own
+
+  capability_matrix_default:
+    policies:
+      - capability_matrix_default_select_authenticated
+
+  capability_grants:
+    policies:
+      - capability_grants_select_members
+      - capability_grants_insert_owner
+      - capability_grants_update_owner
+
+  approval_auto_rules:
+    policies:
+      - approval_auto_rules_select_members
+      - approval_auto_rules_insert_owner
+      - approval_auto_rules_update_owner
+      - approval_auto_rules_delete_owner
+
+  approval_requests:
+    policies:
+      - approval_requests_select_members
+      - approval_requests_insert_self
+      - approval_requests_update_resolver
+
+  rls_babysitter_scope_demo:
+    policies:
+      - rls_babysitter_scope_demo_select
