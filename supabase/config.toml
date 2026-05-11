@@ -2,6 +2,8 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
 # working directory name when running `supabase init`.
+# After `supabase link`, the hosted project ref is stored for remote operations; keep local and
+# hosted Postgres major_version aligned (see [db].major_version).
 project_id = "AutoLife"
 
 [api]
@@ -228,6 +230,24 @@ otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
+# Email templates (committed under supabase/templates). Magic link + password recovery use GoTrue
+# email flows with email/password sign-in enabled above.
+[auth.email.template.confirmation]
+subject = "Confirm your AutoLife signup"
+content_path = "./supabase/templates/confirm_signup.html"
+
+[auth.email.template.recovery]
+subject = "Reset your AutoLife password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Your AutoLife magic link"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.invite]
+subject = "You have been invited to AutoLife"
+content_path = "./supabase/templates/invite.html"
+
 # Use a production-ready SMTP server
 # [auth.email.smtp]
 # enabled = true
@@ -329,6 +349,27 @@ skip_nonce_check = false
 # If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
 email_optional = false
 
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+redirect_uri = ""
+skip_nonce_check = true
+email_optional = false
+
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
+redirect_uri = ""
+
+[auth.external.azure]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_AZURE_SECRET)"
+redirect_uri = ""
+url = ""
+
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
 [auth.web3.solana]
@@ -376,6 +417,15 @@ policy = "per_worker"
 inspector_port = 8083
 # The Deno major version to use.
 deno_version = 2
+
+[functions.process-event]
+verify_jwt = false
+
+[functions.bootstrap]
+verify_jwt = false
+
+[functions.event-bus-sweep]
+verify_jwt = false
 
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
