@@ -17,6 +17,8 @@ Idea-Refined Part 5.1 anchor:
 
 ## Postgres
 
+RLS policy shapes for these tables follow [rls-templates.md](rls-templates.md).
+
 | Object | Migration | Purpose |
 | --- | --- | --- |
 | `family_role` enum | `20260512000200_role_enum.sql` | Owner-facing roles mirrored in Dart `FamilyRole`. |

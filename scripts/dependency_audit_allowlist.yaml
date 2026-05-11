@@ -1,0 +1,5 @@
+# CVE allowlist for npm audit findings with severity CRITICAL.
+# Each waived finding must declare:
+#   - id (GHSA-xxxx-xxxx-xxxx from npm/GitHub Advisory DB)
+#   - accepted_at (YYYY-MM-DD) + remediation_deadline (≤ accepted_at + 14d unless security owner extends)
+critical: []

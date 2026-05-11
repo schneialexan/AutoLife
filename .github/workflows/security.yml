@@ -1,0 +1,124 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+  schedule:
+    # Nightly drift + deeper secret history on main branch only.
+    - cron: '17 4 * * *'
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'schedule' && 0 || 1 }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install workspace deps
+        run: dart pub get
+
+      - name: Pentest markdown link validation
+        run: dart run scripts/pentest_docs_validate.dart
+
+      - name: Secret scan (tree)
+        run: dart run scripts/secret_scan.dart
+
+      - name: Secret scan (historic, nightly/full checkout)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          SECRET_SCAN_HISTORY: '1'
+        run: dart run scripts/secret_scan.dart --history --max-patch-chars 67108864
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install workspace deps
+        run: dart pub get
+
+        run: bash scripts/dependency_audit.sh
+
+      - name: Upload dependency audit JSON
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-json
+          path: reports/security/dependency_audit_report.json
+
+  policy-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install workspace deps
+        run: dart pub get
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase stack
+        run: supabase start
+
+      - name: Fresh schema
+        run: supabase db reset
+
+      - name: Policy drift check
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          dart run scripts/policy_drift_check.dart
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup || true

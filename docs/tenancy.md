@@ -24,7 +24,7 @@ Application code must treat **`family_id`** as mandatory for writes and must ali
 
 ## RLS
 
-Baseline policies ship in `20260512000100_family_tenancy.sql`. Tightening and capability checks are owned by Phase 2.4 (`phase2.4_rls_policies.plan.md`).
+Policies use the shared template library — see [rls-templates.md](rls-templates.md). Phase 2.4 migrations: `20260512000300_rls_helpers.sql`, `20260512000310_apply_rls_phase2.sql`. Baseline tenancy policies originate in `20260512000100_family_tenancy.sql` and were superseded or layered in 2.4.
 
 ## Client services
 

@@ -61,6 +61,27 @@ jobs:
       - name: Apply migrations and seed (verify baseline)
         run: supabase db reset
 
+      - name: pgTAP RLS + policy gates
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          supabase test db supabase/tests/rls
+          dart run scripts/rls_coverage_gate.dart
+          dart run scripts/policy_drift_check.dart
+          dart run scripts/sensitivity_tier_lint.dart
+
+      - name: autolife-core RLS (Tenancy + RolePolicy integration)
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          export SUPABASE_URL="${API_URL}"
+          export SUPABASE_ANON_KEY="${ANON_KEY}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY}"
+          cd packages/autolife-core
+          flutter test test/tenancy/supabase_rls_integration_test.dart
+
       - name: Supabase db lint
         run: supabase db lint --fail-on error
 

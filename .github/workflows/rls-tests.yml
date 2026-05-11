@@ -1,0 +1,53 @@
+name: RLS tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Pub cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Install root dependencies
+        run: dart pub get
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase
+        run: supabase start
+
+      - name: Apply migrations and seed
+        run: supabase db reset
+
+      - name: pgTAP RLS suite
+        run: supabase test db supabase/tests/rls
+
+      - name: SQL coverage gate + policy drift
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          dart run scripts/rls_coverage_gate.dart
+          dart run scripts/policy_drift_check.dart
+          dart run scripts/sensitivity_tier_lint.dart
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup || true

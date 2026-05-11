@@ -24,3 +24,9 @@ coverage/
 # Supabase (local secrets / temp)
 supabase/.branches/
 supabase/.temp/
+
+# Generated security tooling (CI uploads artifacts separately)
+reports/
+
+# Cursor agent debug logs (local only)
+.cursor/debug*.log
