@@ -9,7 +9,7 @@ To avoid building separate apps and ensure seamless real-time syncing, the archi
 *   **Frontend (UI):** **Flutter**. Write once, compile natively to iOS, Android, Web, and Desktop. Perfect for complex, interactive calendars and lists.
 *   **Backend & Database:** **Supabase**. Provides real-time database syncing (crucial for shared family lists), secure user authentication, and cloud storage (for receipts, PDFs, and photos). Provides seamless offline-sync caching.
 *   **AI & OCR Engine:** **Google Cloud Vision API** (or similar) to read uploaded receipts, extract data (store, price, date), read nutrition labels, and parse unstructured text (like forwarding a school email to generate calendar events).
-*   **Docker**: the apps should also be able to run in a docker environment so i can also selfhost everything if i want. Each "AutoXXX" app should be it's own github repo.
+*   **Melo**: the apps should each be its own Melo folder.
 *   **Unified UI** All UI's should have the same "feel" and "vibe", they should look and feel the same to use, even if they are all different/sub-repos.
 
 ---
@@ -18,7 +18,6 @@ To avoid building separate apps and ensure seamless real-time syncing, the archi
 These system-wide mechanics ensure the app feels premium, frictionless, and intelligent.
 *   **Universal Omnibar Search:** A single search bar that queries *everything*. Typing "Apple" shows the Apple Store purchase receipt, the grocery list item, the calendar event "Apple Picking," and the task "Fix Apple Watch."
 *   **Robust Offline Mode Engine:** Supabase/Flutter handles offline caching so users can check off groceries or view calendars with no cell service. It resolves conflicts seamlessly when reconnected.
-*   **Audio/Voice Command Button (AI):** A central mic button. Say, *"Remind me to call the plumber next Tuesday and add milk to the groceries,"* and the AI routes the actions to the correct modules (Task, Calendar, AutoDine).
 *   **Smart Morning/Evening Briefings:** A daily 7:00 AM (this can be changed in settings) push notification: *"Today you have 3 meetings, 2 tasks. It’s going to rain, so your son's soccer game might be canceled."*
 *   **Printability:** Export lists, calendars, and meal plans to a clean PDF format to stick on the fridge. (with multple design options to choose from)
 

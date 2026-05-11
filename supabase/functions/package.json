@@ -1,8 +1,0 @@
-{
-  "name": "autolife-supabase-functions",
-  "private": true,
-  "devDependencies": {
-    "@supabase/supabase-js": "^2.49.1",
-    "typescript": "~5.8.3"
-  }
-}
