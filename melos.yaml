@@ -1,0 +1,37 @@
+name: autolife
+
+packages:
+  - apps/**
+  - packages/**
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+ide:
+  intellij: false
+
+scripts:
+  analyze:
+    run: melos exec -c 1 -- "dart analyze ."
+    description: Run Dart analyzer in every package.
+
+  format:
+    run: dart format --set-exit-if-changed .
+    description: Verify formatting from the repository root.
+
+  test:core:
+    run: melos exec -c 1 --fail-fast --scope=autolife_core --dir-exists=test -- dart test
+
+  test:ui:
+    run: melos exec -c 1 --fail-fast --scope=autolife_ui --dir-exists=test -- flutter test
+
+  test:shell:
+    run: melos exec -c 1 --fail-fast --scope=autolife_shell --dir-exists=test -- flutter test
+
+  test:
+    steps:
+      - melos run test:core
+      - melos run test:ui
+      - melos run test:shell
+    description: Run Dart and Flutter tests for workspace packages.

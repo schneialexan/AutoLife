@@ -1,0 +1,24 @@
+name: autolife_shell
+description: AutoLife Flutter shell (navigation, dashboard scaffold).
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  autolife_core:
+    path: ../../packages/autolife-core
+  autolife_ui:
+    path: ../../packages/autolife-ui
+  cupertino_icons: ^1.0.8
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
