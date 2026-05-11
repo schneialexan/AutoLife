@@ -1,0 +1,20 @@
+name: autolife_ui_gallery
+description: Widgetbook harness for autolife_ui (design system gallery).
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  autolife_ui:
+    path: ..
+  flutter:
+    sdk: flutter
+  widgetbook: ^3.16.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
