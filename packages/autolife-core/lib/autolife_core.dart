@@ -119,3 +119,14 @@ export 'src/sync/remote_sync_gateway.dart';
 export 'src/sync/shell_placeholder_sync.dart';
 export 'src/sync/sync_engine.dart';
 export 'src/sync/sync_providers.dart';
+
+/// Privacy: sensitivity tiers, babysitter links, biometric module locks (phase 2.5).
+export 'src/privacy/babysitter_link_crypto.dart';
+export 'src/privacy/babysitter_link_service.dart';
+export 'src/privacy/biometric_lock_service.dart';
+export 'src/privacy/local_auth_facade.dart';
+export 'src/privacy/models/babysitter_link.dart';
+export 'src/privacy/models/babysitter_scope_toggles.dart';
+export 'src/privacy/privacy_events.dart';
+export 'src/privacy/secure_prefs_store.dart';
+export 'src/privacy/sensitivity_tier.dart';

@@ -19,6 +19,14 @@ class SupabaseEventProducer implements EventProducer {
     // Omit nulls: `updated_at` is NOT NULL with a DB default — explicit null
     // violates NOT NULL and PostgREST returns 400.
     json.removeWhere((_, value) => value == null);
+    // When the client carries a Supabase user session, force `actor_id` to the
+    // user's UUID so the `system_event_insert_self` RLS policy
+    // (actor_id = auth.uid()::text) accepts the row. Service-role / unauth
+    // contexts (integration tests) keep the caller-provided actor_id.
+    final uid = _client.auth.currentUser?.id;
+    if (uid != null && uid.isNotEmpty) {
+      json['actor_id'] = uid;
+    }
     return json;
   }
 

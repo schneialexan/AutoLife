@@ -12,7 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/providers/auth_provider.dart';
 import 'src/providers/shell_providers.dart';
 import 'src/screens/control_center/approval_engine_screen.dart';
+import 'src/screens/control_center/babysitter_link_screen.dart';
+import 'src/screens/control_center/biometric_locks_screen.dart';
 import 'src/screens/control_center/role_matrix_screen.dart';
+import 'src/screens/health/health_stub_screen.dart';
 import 'src/screens/family/family_switcher_screen.dart';
 import 'src/screens/family/invitations_screen.dart';
 import 'src/screens/tenancy/tenancy_bootstrap_shell.dart';
@@ -396,6 +399,48 @@ class _DemoShellHomeState extends ConsumerState<_DemoShellHome> {
                               familyName: _workspaceTitle,
                               canResolve: _canResolveApprovals,
                             ),
+                          ),
+                        );
+                      },
+                    ),
+                    if (_isFamilyOwner) ...[
+                      ListTile(
+                        leading: const Icon(Icons.fingerprint_outlined),
+                        title: const Text('Biometric locks'),
+                        subtitle: const Text('Require device auth for sensitive modules.'),
+                        onTap: () {
+                          Navigator.of(context).push<void>(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const BiometricLocksScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.link_outlined),
+                        title: const Text('Babysitter link'),
+                        subtitle: const Text('Share a scoped, expiring read-only token.'),
+                        onTap: () {
+                          Navigator.of(context).push<void>(
+                            MaterialPageRoute<void>(
+                              builder: (_) => BabysitterLinkScreen(
+                                familyId: widget.activeFamilyId,
+                                familyName: _workspaceTitle,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(),
+                    ],
+                    ListTile(
+                      leading: const Icon(Icons.favorite_outline),
+                      title: const Text('Health (demo)'),
+                      subtitle: const Text('Biometric-gated placeholder for Phase 3.6.'),
+                      onTap: () {
+                        Navigator.of(context).push<void>(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const HealthStubScreen(),
                           ),
                         );
                       },
