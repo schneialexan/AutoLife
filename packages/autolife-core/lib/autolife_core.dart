@@ -52,11 +52,17 @@ export 'src/models/role.dart';
 /// Canonical persisted event for the AutoLife event bus (`system_event`).
 export 'src/models/system_event.dart';
 
+/// Local calendar row model (feature schemas may extend in later phases).
+export 'src/models/calendar_event.dart';
+
 /// Fan-out dispatch registry consumed by phase 1.5 workers.
 export 'src/services/event_consumer.dart';
 
 /// Inserts canonical events into `system_event` (phase 1.5).
 export 'src/services/event_producer.dart';
+
+/// Concrete `EventProducer` that inserts canonical events through Supabase/PostgREST.
+export 'src/services/supabase_event_producer.dart';
 
 /// Minimal integration handshake shape (lifecycle in phase 1.7).
 export 'src/services/integration_connector.dart';
