@@ -46,9 +46,50 @@ jobs:
       - name: Test
         run: dart run melos run test
 
+      - name: Golden tests (autolife-ui)
+        run: cd packages/autolife-ui && flutter test --tags golden
+
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+
+      - name: Start Supabase local stack
+        run: supabase start
+
+      - name: Apply migrations and seed (verify baseline)
+        run: supabase db reset
+
+      - name: Supabase db lint
+        run: supabase db lint --fail-on error
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Edge function tests (Deno)
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          export SUPABASE_URL="${API_URL}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY}"
+          export SUPABASE_DB_DIRECT_URL="${DB_URL}"
+          (cd supabase/functions/process-event && deno test --allow-env --allow-net)
+          (cd supabase/functions/bootstrap && deno test)
+
+      - name: autolife-core Supabase producer integration
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          export SUPABASE_URL="${API_URL}"
+          export SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY}"
+          cd packages/autolife-core
+          dart test test/services/supabase_event_producer_integration_test.dart
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup || true
 
       - name: Verify Supabase scaffold
         run: test -f supabase/config.toml && test -d supabase/migrations && test -d supabase/functions

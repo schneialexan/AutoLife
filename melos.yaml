@@ -24,10 +24,22 @@ scripts:
     run: melos exec -c 1 --fail-fast --scope=autolife_core --dir-exists=test -- dart test
 
   test:ui:
-    run: melos exec -c 1 --fail-fast --scope=autolife_ui --dir-exists=test -- flutter test
+    run: melos exec -c 1 --fail-fast --scope=autolife_ui --dir-exists=test -- flutter test --exclude-tags golden
+
+  test:ui:goldens:
+    run: melos exec -c 1 --fail-fast --scope=autolife_ui --dir-exists=test -- flutter test --tags golden
+    description: Golden snapshots for autolife_ui (run on Linux CI).
+
+  gallery:
+    run: melos exec -c 1 --scope=autolife_ui_gallery -- flutter run -d chrome -t lib/main.dart
+    description: Launch Widgetbook gallery for autolife_ui on Chrome.
 
   test:shell:
     run: melos exec -c 1 --fail-fast --scope=autolife_shell --dir-exists=test -- flutter test
+
+  supabase:reset:
+    run: supabase db reset
+    description: Reset local Supabase DB, apply migrations, and run seed.sql.
 
   test:
     steps:
