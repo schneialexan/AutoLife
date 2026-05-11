@@ -15,7 +15,7 @@
 /// - [EventProducer] — phase 1.5 producer / Supabase insert.
 /// - [EventConsumerRegistry] — phase 1.5 `process-event` dispatch.
 /// - [Repository] — data access in apps / phase 1.6 Drift.
-/// - [IntegrationConnector] — phase 1.7 gateway.
+/// - [IntegrationConnector], [OfflineAwareIntegrationConnector], [ConnectorRegistry], [MockConnector] — phase 1.7 gateway.
 /// - [OfflineWriteQueue] — phase 1.6 offline queue.
 library;
 
@@ -64,11 +64,36 @@ export 'src/services/event_producer.dart';
 /// Concrete `EventProducer` that inserts canonical events through Supabase/PostgREST.
 export 'src/services/supabase_event_producer.dart';
 
-/// Minimal integration handshake shape (lifecycle in phase 1.7).
+/// Offline-aware [EventProducer] (phase 1.8).
+export 'src/services/offline_aware_event_producer.dart';
+
+/// Minimal integration handshake export (canonical types live under `src/integrations/`).
 export 'src/services/integration_connector.dart';
+
+/// Connector gateway registry, coordinator, and Riverpod providers (phase 1.7).
+export 'src/integrations/connector_audit_logger.dart';
+export 'src/integrations/connector_lifecycle_coordinator.dart';
+export 'src/integrations/connector_registry.dart';
+export 'src/integrations/connector_status.dart';
+export 'src/integrations/connector_status_tracker.dart';
+export 'src/integrations/integration_providers.dart';
+export 'src/integrations/mock_connector.dart';
+export 'src/integrations/supabase_connector_audit_logger.dart';
 
 /// Offline mutation outbox API (backing store in phase 1.6).
 export 'src/services/offline_write_queue.dart';
 
 /// Generic CRUD persistence contract for feature modules.
 export 'src/services/repository.dart';
+
+/// Drift cache, offline queue, sync engine, and Riverpod surfaces (phase 1.6).
+export 'src/sync/autolife_database.dart';
+export 'src/sync/conflict_resolver.dart';
+export 'src/sync/connectivity_watcher.dart';
+export 'src/sync/device_encryption_key_store.dart';
+export 'src/sync/drift_offline_write_queue.dart';
+export 'src/sync/payload_cipher.dart';
+export 'src/sync/remote_sync_gateway.dart';
+export 'src/sync/shell_placeholder_sync.dart';
+export 'src/sync/sync_engine.dart';
+export 'src/sync/sync_providers.dart';

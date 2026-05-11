@@ -17,6 +17,9 @@ _SystemEvent _$SystemEventFromJson(Map<String, dynamic> json) => _SystemEvent(
   occurredAt: DateTime.parse(json['occurred_at'] as String),
   orderingTag: json['ordering_tag'] as String,
   schemaVersion: (json['schema_version'] as num).toInt(),
+  updatedAt: json['updated_at'] == null
+      ? null
+      : DateTime.parse(json['updated_at'] as String),
 );
 
 Map<String, dynamic> _$SystemEventToJson(_SystemEvent instance) =>
@@ -31,4 +34,5 @@ Map<String, dynamic> _$SystemEventToJson(_SystemEvent instance) =>
       'occurred_at': instance.occurredAt.toIso8601String(),
       'ordering_tag': instance.orderingTag,
       'schema_version': instance.schemaVersion,
+      'updated_at': instance.updatedAt?.toIso8601String(),
     };

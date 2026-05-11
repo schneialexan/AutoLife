@@ -17,6 +17,9 @@ _EventDelivery _$EventDeliveryFromJson(Map<String, dynamic> json) =>
       nextAttemptAt: json['next_attempt_at'] == null
           ? null
           : DateTime.parse(json['next_attempt_at'] as String),
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$EventDeliveryToJson(_EventDelivery instance) =>
@@ -28,6 +31,7 @@ Map<String, dynamic> _$EventDeliveryToJson(_EventDelivery instance) =>
       'status': _$EventDeliveryStatusEnumMap[instance.status]!,
       'last_error': instance.lastError,
       'next_attempt_at': instance.nextAttemptAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
     };
 
 const _$EventDeliveryStatusEnumMap = {

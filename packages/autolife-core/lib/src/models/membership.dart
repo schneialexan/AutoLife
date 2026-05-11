@@ -13,6 +13,7 @@ abstract class Membership with _$Membership {
     @JsonKey(name: 'family_id') required String familyId,
     @JsonKey(name: 'profile_id') required String profileId,
     required Role role,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _Membership;
 
   factory Membership.fromJson(Map<String, dynamic> json) =>

@@ -19,6 +19,7 @@ abstract class SystemEvent with _$SystemEvent {
     @JsonKey(name: 'occurred_at') required DateTime occurredAt,
     @JsonKey(name: 'ordering_tag') required String orderingTag,
     @JsonKey(name: 'schema_version') required int schemaVersion,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _SystemEvent;
 
   factory SystemEvent.fromJson(Map<String, dynamic> json) =>

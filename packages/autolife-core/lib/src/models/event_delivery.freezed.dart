@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EventDelivery {
 
- String get id;@JsonKey(name: 'event_id') String get eventId; String get consumer; int get attempt; EventDeliveryStatus get status;@JsonKey(name: 'last_error') String? get lastError;@JsonKey(name: 'next_attempt_at') DateTime? get nextAttemptAt;
+ String get id;@JsonKey(name: 'event_id') String get eventId; String get consumer; int get attempt; EventDeliveryStatus get status;@JsonKey(name: 'last_error') String? get lastError;@JsonKey(name: 'next_attempt_at') DateTime? get nextAttemptAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of EventDelivery
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $EventDeliveryCopyWith<EventDelivery> get copyWith => _$EventDeliveryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventDelivery&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.consumer, consumer) || other.consumer == consumer)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastError, lastError) || other.lastError == lastError)&&(identical(other.nextAttemptAt, nextAttemptAt) || other.nextAttemptAt == nextAttemptAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventDelivery&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.consumer, consumer) || other.consumer == consumer)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastError, lastError) || other.lastError == lastError)&&(identical(other.nextAttemptAt, nextAttemptAt) || other.nextAttemptAt == nextAttemptAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,eventId,consumer,attempt,status,lastError,nextAttemptAt);
+int get hashCode => Object.hash(runtimeType,id,eventId,consumer,attempt,status,lastError,nextAttemptAt,updatedAt);
 
 @override
 String toString() {
-  return 'EventDelivery(id: $id, eventId: $eventId, consumer: $consumer, attempt: $attempt, status: $status, lastError: $lastError, nextAttemptAt: $nextAttemptAt)';
+  return 'EventDelivery(id: $id, eventId: $eventId, consumer: $consumer, attempt: $attempt, status: $status, lastError: $lastError, nextAttemptAt: $nextAttemptAt, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $EventDeliveryCopyWith<$Res>  {
   factory $EventDeliveryCopyWith(EventDelivery value, $Res Function(EventDelivery) _then) = _$EventDeliveryCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'event_id') String eventId, String consumer, int attempt, EventDeliveryStatus status,@JsonKey(name: 'last_error') String? lastError,@JsonKey(name: 'next_attempt_at') DateTime? nextAttemptAt
+ String id,@JsonKey(name: 'event_id') String eventId, String consumer, int attempt, EventDeliveryStatus status,@JsonKey(name: 'last_error') String? lastError,@JsonKey(name: 'next_attempt_at') DateTime? nextAttemptAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -65,7 +65,7 @@ class _$EventDeliveryCopyWithImpl<$Res>
 
 /// Create a copy of EventDelivery
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventId = null,Object? consumer = null,Object? attempt = null,Object? status = null,Object? lastError = freezed,Object? nextAttemptAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventId = null,Object? consumer = null,Object? attempt = null,Object? status = null,Object? lastError = freezed,Object? nextAttemptAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,eventId: null == eventId ? _self.eventId : eventId // ignore: cast_nullable_to_non_nullable
@@ -74,6 +74,7 @@ as String,attempt: null == attempt ? _self.attempt : attempt // ignore: cast_nul
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EventDeliveryStatus,lastError: freezed == lastError ? _self.lastError : lastError // ignore: cast_nullable_to_non_nullable
 as String?,nextAttemptAt: freezed == nextAttemptAt ? _self.nextAttemptAt : nextAttemptAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EventDelivery() when $default != null:
-return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt);case _:
+return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _EventDelivery():
-return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt);case _:
+return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'event_id')  String eventId,  String consumer,  int attempt,  EventDeliveryStatus status, @JsonKey(name: 'last_error')  String? lastError, @JsonKey(name: 'next_attempt_at')  DateTime? nextAttemptAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _EventDelivery() when $default != null:
-return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt);case _:
+return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status,_that.lastError,_that.nextAttemptAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return $default(_that.id,_that.eventId,_that.consumer,_that.attempt,_that.status
 @JsonSerializable()
 
 class _EventDelivery implements EventDelivery {
-  const _EventDelivery({required this.id, @JsonKey(name: 'event_id') required this.eventId, required this.consumer, required this.attempt, required this.status, @JsonKey(name: 'last_error') this.lastError, @JsonKey(name: 'next_attempt_at') this.nextAttemptAt});
+  const _EventDelivery({required this.id, @JsonKey(name: 'event_id') required this.eventId, required this.consumer, required this.attempt, required this.status, @JsonKey(name: 'last_error') this.lastError, @JsonKey(name: 'next_attempt_at') this.nextAttemptAt, @JsonKey(name: 'updated_at') this.updatedAt});
   factory _EventDelivery.fromJson(Map<String, dynamic> json) => _$EventDeliveryFromJson(json);
 
 @override final  String id;
@@ -225,6 +226,7 @@ class _EventDelivery implements EventDelivery {
 @override final  EventDeliveryStatus status;
 @override@JsonKey(name: 'last_error') final  String? lastError;
 @override@JsonKey(name: 'next_attempt_at') final  DateTime? nextAttemptAt;
+@override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 
 /// Create a copy of EventDelivery
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventDelivery&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.consumer, consumer) || other.consumer == consumer)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastError, lastError) || other.lastError == lastError)&&(identical(other.nextAttemptAt, nextAttemptAt) || other.nextAttemptAt == nextAttemptAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventDelivery&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.consumer, consumer) || other.consumer == consumer)&&(identical(other.attempt, attempt) || other.attempt == attempt)&&(identical(other.status, status) || other.status == status)&&(identical(other.lastError, lastError) || other.lastError == lastError)&&(identical(other.nextAttemptAt, nextAttemptAt) || other.nextAttemptAt == nextAttemptAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,eventId,consumer,attempt,status,lastError,nextAttemptAt);
+int get hashCode => Object.hash(runtimeType,id,eventId,consumer,attempt,status,lastError,nextAttemptAt,updatedAt);
 
 @override
 String toString() {
-  return 'EventDelivery(id: $id, eventId: $eventId, consumer: $consumer, attempt: $attempt, status: $status, lastError: $lastError, nextAttemptAt: $nextAttemptAt)';
+  return 'EventDelivery(id: $id, eventId: $eventId, consumer: $consumer, attempt: $attempt, status: $status, lastError: $lastError, nextAttemptAt: $nextAttemptAt, updatedAt: $updatedAt)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$EventDeliveryCopyWith<$Res> implements $EventDeliveryCopy
   factory _$EventDeliveryCopyWith(_EventDelivery value, $Res Function(_EventDelivery) _then) = __$EventDeliveryCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'event_id') String eventId, String consumer, int attempt, EventDeliveryStatus status,@JsonKey(name: 'last_error') String? lastError,@JsonKey(name: 'next_attempt_at') DateTime? nextAttemptAt
+ String id,@JsonKey(name: 'event_id') String eventId, String consumer, int attempt, EventDeliveryStatus status,@JsonKey(name: 'last_error') String? lastError,@JsonKey(name: 'next_attempt_at') DateTime? nextAttemptAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -276,7 +278,7 @@ class __$EventDeliveryCopyWithImpl<$Res>
 
 /// Create a copy of EventDelivery
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventId = null,Object? consumer = null,Object? attempt = null,Object? status = null,Object? lastError = freezed,Object? nextAttemptAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventId = null,Object? consumer = null,Object? attempt = null,Object? status = null,Object? lastError = freezed,Object? nextAttemptAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_EventDelivery(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,eventId: null == eventId ? _self.eventId : eventId // ignore: cast_nullable_to_non_nullable
@@ -285,6 +287,7 @@ as String,attempt: null == attempt ? _self.attempt : attempt // ignore: cast_nul
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as EventDeliveryStatus,lastError: freezed == lastError ? _self.lastError : lastError // ignore: cast_nullable_to_non_nullable
 as String?,nextAttemptAt: freezed == nextAttemptAt ? _self.nextAttemptAt : nextAttemptAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

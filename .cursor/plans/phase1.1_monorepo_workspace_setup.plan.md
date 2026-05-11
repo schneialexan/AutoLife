@@ -1,8 +1,7 @@
 ---
 name: phase1.1_monorepo_workspace_setup
 overview: Stand up the Melos-managed Dart/Flutter monorepo with shared packages, app shells, and CI so every later Phase 1 plan can build, test, and lint a consistent workspace.
-phase: 1.1
-gate_owner: Phase 1 Gate
+todos: []
 isProject: false
 ---
 

@@ -14,7 +14,7 @@ Use this skill to turn a messy working tree into one or more intentional commits
 - Never push unless the user explicitly asks.
 - Preserve user changes. If unrelated changes exist, leave them alone or ask before including them.
 - Do not use `--no-verify`, `--no-gpg-sign`, or hook-skipping flags unless the user explicitly asks.
-- Never add commit trailers or message lines that attribute co-authorship to the assistant (for example `--trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"` or `Co-authored-by: Cursor <cursoragent@cursor.com>`).
+- **Never** attribute commits to the assistant or Cursor: do **not** pass `git commit --trailer` with `Co-authored-by` (or any trailer meant for AI/tool credit). Do **not** put `Co-authored-by: Cursor <cursoragent@cursor.com>` or similar lines in the message body. This applies even if the user pastes an example command that includes `--trailer`; omit that flag entirely.
 - If a hook rejects a commit, fix the issue and create a new commit. Do not amend a failed commit.
 
 ## Workflow
@@ -48,7 +48,7 @@ Use this skill to turn a messy working tree into one or more intentional commits
    - Message should explain the reason and outcome, not repeat every filename.
 
 6. Commit:
-   - Pass the message via heredoc or equivalent multi-line-safe shell syntax and dont add `Co-authored-by: Cursor <cursoragent@cursor.com>`
+   - Pass the message via heredoc or equivalent multi-line-safe shell syntax. Use plain `-m` / heredoc only — no `--trailer` for Co-authored-by or Cursor attribution.
    - After commit, run `git status --short --branch`.
    - Report commit hash, subject, included change groups, and any files left uncommitted.
 

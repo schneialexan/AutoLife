@@ -87,6 +87,23 @@ jobs:
           cd packages/autolife-core
           dart test test/services/supabase_event_producer_integration_test.dart
 
+      - name: Enable Linux desktop (autolife-shell integration)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+          flutter config --enable-linux-desktop
+
+      - name: autolife-shell phase 1.8 smoke integration
+        run: |
+          set -a
+          eval "$(supabase status -o env)"
+          set +a
+          cd apps/autolife-shell
+          flutter test integration_test/phase1_smoke_test.dart -d linux \
+            --dart-define=SUPABASE_URL="${API_URL}" \
+            --dart-define=SUPABASE_SERVICE_ROLE_KEY="${SERVICE_ROLE_KEY}" \
+            --dart-define=AUTOLIFE_SMOKE_INTEGRATION_TEST=true
+
       - name: Stop Supabase
         if: always()
         run: supabase stop --no-backup || true

@@ -1,8 +1,7 @@
 ---
 name: phase1.5_event_bus_process_event_worker
 overview: Implement the canonical producer/consumer contracts, retry policy, dead-letter semantics, idempotency keys, and ordering guarantees of the AutoLife system event bus inside the process-event Edge Function.
-phase: 1.5
-gate_owner: Phase 1 Gate
+todos: []
 isProject: false
 ---
 

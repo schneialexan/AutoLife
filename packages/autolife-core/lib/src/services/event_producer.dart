@@ -7,3 +7,12 @@ abstract class EventProducer {
   /// Persists [event]. The server may assign [SystemEvent.id].
   Future<Result<SystemEvent>> publish(SystemEvent event);
 }
+
+/// Succeeds immediately without persisting (shell bootstrap / tests).
+class IgnoringEventProducer implements EventProducer {
+  const IgnoringEventProducer();
+
+  @override
+  Future<Result<SystemEvent>> publish(SystemEvent event) async =>
+      Result.success(event);
+}

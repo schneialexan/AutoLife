@@ -15,8 +15,11 @@ class SupabaseEventProducer implements EventProducer {
   final SupabaseClient _client;
 
   Map<String, dynamic> _insertPayload(SystemEvent event) {
-    final json = event.toJson()..remove('id');
-    return Map<String, dynamic>.from(json);
+    final json = Map<String, dynamic>.from(event.toJson())..remove('id');
+    // Omit nulls: `updated_at` is NOT NULL with a DB default — explicit null
+    // violates NOT NULL and PostgREST returns 400.
+    json.removeWhere((_, value) => value == null);
+    return json;
   }
 
   @override
@@ -37,8 +40,9 @@ class SupabaseEventProducer implements EventProducer {
       // PostgREST can return zero rows depending on RLS posture; normalize via select.
       return await _loadExisting(event.tenantId, event.idempotencyKey);
     } on PostgrestException catch (e) {
-      if (_isIdempotencyDuplicate(e))
+      if (_isIdempotencyDuplicate(e)) {
         return _loadExisting(event.tenantId, event.idempotencyKey);
+      }
       return Result.failure(
         Failure(
           code: 'event_publish_failed',

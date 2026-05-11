@@ -16,6 +16,7 @@ abstract class EventDelivery with _$EventDelivery {
     required EventDeliveryStatus status,
     @JsonKey(name: 'last_error') String? lastError,
     @JsonKey(name: 'next_attempt_at') DateTime? nextAttemptAt,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _EventDelivery;
 
   factory EventDelivery.fromJson(Map<String, dynamic> json) =>

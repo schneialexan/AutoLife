@@ -74,7 +74,17 @@ class _FakeIntegrationConnector implements IntegrationConnector {
   _FakeIntegrationConnector();
 
   @override
-  String get integrationId => 'fake';
+  String get connectorId => 'fake';
+
+  @override
+  IntegrationConnectorDirection get directions =>
+      IntegrationConnectorDirection.twoWay;
+
+  @override
+  Future<Result<void>> connect({Tenant? tenant}) async {
+    connected = true;
+    return _voidOk();
+  }
 
   @override
   Future<Result<void>> disconnect() async {
@@ -83,10 +93,21 @@ class _FakeIntegrationConnector implements IntegrationConnector {
   }
 
   @override
-  Future<Result<void>> ensureConnected({Tenant? tenant}) async {
-    connected = true;
-    return _voidOk();
-  }
+  Future<Result<void>> healthcheck({Tenant? tenant}) async => _voidOk();
+
+  @override
+  Future<Result<Map<String, dynamic>>> pullChanges({Tenant? tenant}) async =>
+      Result.success({});
+
+  @override
+  Future<Result<void>> pushChanges({
+    Tenant? tenant,
+    required Map<String, dynamic> payload,
+  }) async =>
+      _voidOk();
+
+  @override
+  Future<Result<void>> refresh({Tenant? tenant}) async => _voidOk();
 }
 
 class _FakeOfflineQueue implements OfflineWriteQueue {
@@ -162,7 +183,7 @@ void main() {
 
   test('IntegrationConnector fake tracks connection', () async {
     final c = _FakeIntegrationConnector();
-    await c.ensureConnected(tenant: const Tenant(tenantId: 'z'));
+    await c.connect(tenant: const Tenant(tenantId: 'z'));
     expect(c.connected, isTrue);
     await c.disconnect();
     expect(c.connected, isFalse);

@@ -9,6 +9,7 @@ abstract class Family with _$Family {
   const factory Family({
     required String id,
     @JsonKey(name: 'display_name') required String displayName,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _Family;
 
   factory Family.fromJson(Map<String, dynamic> json) => _$FamilyFromJson(json);

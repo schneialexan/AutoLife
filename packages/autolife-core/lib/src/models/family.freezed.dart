@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Family {
 
- String get id;@JsonKey(name: 'display_name') String get displayName;
+ String get id;@JsonKey(name: 'display_name') String get displayName;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of Family
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $FamilyCopyWith<Family> get copyWith => _$FamilyCopyWithImpl<Family>(this as Fam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Family&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Family&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,displayName);
+int get hashCode => Object.hash(runtimeType,id,displayName,updatedAt);
 
 @override
 String toString() {
-  return 'Family(id: $id, displayName: $displayName)';
+  return 'Family(id: $id, displayName: $displayName, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $FamilyCopyWith<$Res>  {
   factory $FamilyCopyWith(Family value, $Res Function(Family) _then) = _$FamilyCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'display_name') String displayName
+ String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -65,11 +65,12 @@ class _$FamilyCopyWithImpl<$Res>
 
 /// Create a copy of Family
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
-as String,
+as String,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Family() when $default != null:
-return $default(_that.id,_that.displayName);case _:
+return $default(_that.id,_that.displayName,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.id,_that.displayName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Family():
-return $default(_that.id,_that.displayName);case _:
+return $default(_that.id,_that.displayName,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.id,_that.displayName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'display_name')  String displayName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Family() when $default != null:
-return $default(_that.id,_that.displayName);case _:
+return $default(_that.id,_that.displayName,_that.updatedAt);case _:
   return null;
 
 }
@@ -210,11 +211,12 @@ return $default(_that.id,_that.displayName);case _:
 @JsonSerializable()
 
 class _Family implements Family {
-  const _Family({required this.id, @JsonKey(name: 'display_name') required this.displayName});
+  const _Family({required this.id, @JsonKey(name: 'display_name') required this.displayName, @JsonKey(name: 'updated_at') this.updatedAt});
   factory _Family.fromJson(Map<String, dynamic> json) => _$FamilyFromJson(json);
 
 @override final  String id;
 @override@JsonKey(name: 'display_name') final  String displayName;
+@override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 
 /// Create a copy of Family
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Family&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Family&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,displayName);
+int get hashCode => Object.hash(runtimeType,id,displayName,updatedAt);
 
 @override
 String toString() {
-  return 'Family(id: $id, displayName: $displayName)';
+  return 'Family(id: $id, displayName: $displayName, updatedAt: $updatedAt)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$FamilyCopyWith<$Res> implements $FamilyCopyWith<$Res> {
   factory _$FamilyCopyWith(_Family value, $Res Function(_Family) _then) = __$FamilyCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'display_name') String displayName
+ String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -266,11 +268,12 @@ class __$FamilyCopyWithImpl<$Res>
 
 /// Create a copy of Family
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? updatedAt = freezed,}) {
   return _then(_Family(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
-as String,
+as String,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Profile {
 
- String get id;@JsonKey(name: 'display_name') String get displayName;@JsonKey(name: 'family_id') String? get familyId;
+ String get id;@JsonKey(name: 'display_name') String get displayName;@JsonKey(name: 'family_id') String? get familyId;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ProfileCopyWith<Profile> get copyWith => _$ProfileCopyWithImpl<Profile>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.familyId, familyId) || other.familyId == familyId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,displayName,familyId);
+int get hashCode => Object.hash(runtimeType,id,displayName,familyId,updatedAt);
 
 @override
 String toString() {
-  return 'Profile(id: $id, displayName: $displayName, familyId: $familyId)';
+  return 'Profile(id: $id, displayName: $displayName, familyId: $familyId, updatedAt: $updatedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ProfileCopyWith<$Res>  {
   factory $ProfileCopyWith(Profile value, $Res Function(Profile) _then) = _$ProfileCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'family_id') String? familyId
+ String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'family_id') String? familyId,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -65,12 +65,13 @@ class _$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? familyId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = null,Object? familyId = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,familyId: freezed == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.displayName,_that.familyId);case _:
+return $default(_that.id,_that.displayName,_that.familyId,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.id,_that.displayName,_that.familyId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Profile():
-return $default(_that.id,_that.displayName,_that.familyId);case _:
+return $default(_that.id,_that.displayName,_that.familyId,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.id,_that.displayName,_that.familyId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'display_name')  String displayName, @JsonKey(name: 'family_id')  String? familyId, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Profile() when $default != null:
-return $default(_that.id,_that.displayName,_that.familyId);case _:
+return $default(_that.id,_that.displayName,_that.familyId,_that.updatedAt);case _:
   return null;
 
 }
@@ -211,12 +212,13 @@ return $default(_that.id,_that.displayName,_that.familyId);case _:
 @JsonSerializable()
 
 class _Profile implements Profile {
-  const _Profile({required this.id, @JsonKey(name: 'display_name') required this.displayName, @JsonKey(name: 'family_id') this.familyId});
+  const _Profile({required this.id, @JsonKey(name: 'display_name') required this.displayName, @JsonKey(name: 'family_id') this.familyId, @JsonKey(name: 'updated_at') this.updatedAt});
   factory _Profile.fromJson(Map<String, dynamic> json) => _$ProfileFromJson(json);
 
 @override final  String id;
 @override@JsonKey(name: 'display_name') final  String displayName;
 @override@JsonKey(name: 'family_id') final  String? familyId;
+@override@JsonKey(name: 'updated_at') final  DateTime? updatedAt;
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.familyId, familyId) || other.familyId == familyId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Profile&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.familyId, familyId) || other.familyId == familyId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,displayName,familyId);
+int get hashCode => Object.hash(runtimeType,id,displayName,familyId,updatedAt);
 
 @override
 String toString() {
-  return 'Profile(id: $id, displayName: $displayName, familyId: $familyId)';
+  return 'Profile(id: $id, displayName: $displayName, familyId: $familyId, updatedAt: $updatedAt)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$ProfileCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   factory _$ProfileCopyWith(_Profile value, $Res Function(_Profile) _then) = __$ProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'family_id') String? familyId
+ String id,@JsonKey(name: 'display_name') String displayName,@JsonKey(name: 'family_id') String? familyId,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -268,12 +270,13 @@ class __$ProfileCopyWithImpl<$Res>
 
 /// Create a copy of Profile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? familyId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = null,Object? familyId = freezed,Object? updatedAt = freezed,}) {
   return _then(_Profile(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,familyId: freezed == familyId ? _self.familyId : familyId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

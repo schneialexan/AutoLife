@@ -1,15 +1,9 @@
-import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { dashboardEventsConsumer } from "./dashboard_events_consumer.ts";
+import type { ConsumerHandler, ConsumerRegistry } from "./types.ts";
 
-import type { SystemEventRow } from "./types.ts";
-
-export type ConsumerContext = {
-  client: SupabaseClient;
-  event: SystemEventRow;
-};
-
-export type ConsumerHandler = (ctx: ConsumerContext) => Promise<void>;
-
-export type ConsumerRegistry = Map<string, ConsumerHandler>;
+export type { ConsumerContext, ConsumerHandler, ConsumerRegistry } from "./types.ts";
 
 /** Phase 3 modules register handlers here (empty registry is valid). */
-export const consumerRegistry = new Map<string, ConsumerHandler>();
+export const consumerRegistry = new Map<string, ConsumerHandler>([
+  ["dashboard", dashboardEventsConsumer],
+]);

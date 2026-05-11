@@ -13,16 +13,33 @@ Realize the vision in [Idea-Refined.md](Idea-Refined.md) as a modular, family-ce
 ## Progress Tracker (Living Companion)
 Use this section as the "how far along are we?" companion. Update checkboxes as you complete sub-phases.
 
+**Showing "built" in this file:** Checked items `[x]` mean the corresponding phase plan has been executed in-repo. The **Phase 1 implementation ledger** (below the Phase 1 list) points at concrete paths so you can diff plans against code.
+
+### Phase 1 implementation ledger (sub-phase → repo evidence)
+
+| Sub-phase | Status | Plan | Evidence |
+|-----------|--------|------|----------|
+| 1.1 | Done | [phase1.1_monorepo_workspace_setup.plan.md](phase1.1_monorepo_workspace_setup.plan.md) | [melos.yaml](../../melos.yaml), root [pubspec.yaml](../../pubspec.yaml), [analysis_options.yaml](../../analysis_options.yaml), [apps/autolife-shell/](../../apps/autolife-shell/), [packages/autolife-core/](../../packages/autolife-core/) and [packages/autolife-ui/](../../packages/autolife-ui/), [supabase/](../../supabase/), [.github/workflows/ci.yml](../../.github/workflows/ci.yml), [README.md](../../README.md), [CONTRIBUTING.md](../../CONTRIBUTING.md) |
+| 1.2 | Done | [phase1.2_autolife_core_contracts.plan.md](phase1.2_autolife_core_contracts.plan.md) | [packages/autolife-core/lib/autolife_core.dart](../../packages/autolife-core/lib/autolife_core.dart) public API, `lib/src/models/`, `lib/src/events/`, `lib/src/services/`, generated `*.freezed.dart` / `*.g.dart`, [packages/autolife-core/test/](../../packages/autolife-core/test/), [packages/autolife-core/CHANGELOG.md](../../packages/autolife-core/CHANGELOG.md) |
+| 1.3 | Done | [phase1.3_autolife_ui_design_system.plan.md](phase1.3_autolife_ui_design_system.plan.md) | [packages/autolife-ui/lib/](../../packages/autolife-ui/lib/) tokens, `AutoLifeTheme`, shared widgets, [packages/autolife-ui/test/goldens/](../../packages/autolife-ui/test/goldens/), [packages/autolife-ui/example/](../../packages/autolife-ui/example/) gallery harness, [packages/autolife-ui/CHANGELOG.md](../../packages/autolife-ui/CHANGELOG.md); shell consumes theme + widgets in [apps/autolife-shell/lib/main.dart](../../apps/autolife-shell/lib/main.dart); CI golden job in [.github/workflows/ci.yml](../../.github/workflows/ci.yml) |
+| 1.4 | Done | [phase1.4_supabase_baseline.plan.md](phase1.4_supabase_baseline.plan.md) | [supabase/migrations/](../../supabase/migrations/) (`0001`–`0003` baseline), [supabase/config.toml](../../supabase/config.toml), [supabase/templates/](../../supabase/templates/), [supabase/seed.sql](../../supabase/seed.sql), [supabase/functions/bootstrap/](../../supabase/functions/bootstrap/), [docs/supabase-local-dev.md](../../docs/supabase-local-dev.md), [.env.example](../../.env.example); CI `supabase start` → `db reset` → `db lint` → bootstrap Deno tests |
+| 1.5 | Done | [phase1.5_event_bus_process_event_worker.plan.md](phase1.5_event_bus_process_event_worker.plan.md) | [supabase/migrations/0010_event_bus_triggers.sql](../../supabase/migrations/0010_event_bus_triggers.sql), [supabase/functions/process-event/](../../supabase/functions/process-event/), [supabase/functions/event-bus-sweep/](../../supabase/functions/event-bus-sweep/), [docs/event-bus-contract.md](../../docs/event-bus-contract.md), [packages/autolife-core/lib/src/services/supabase_event_producer.dart](../../packages/autolife-core/lib/src/services/supabase_event_producer.dart), [packages/autolife-core/test/services/](../../packages/autolife-core/test/services/) + [packages/autolife-core/test/supabase_schema_parity_test.dart](../../packages/autolife-core/test/supabase_schema_parity_test.dart); CI Edge Function Deno tests + producer integration test |
+| 1.6 | Done | [phase1.6_offline_sync_foundation.plan.md](phase1.6_offline_sync_foundation.plan.md) | [docs/offline-sync-contract.md](../../docs/offline-sync-contract.md), [packages/autolife-core/lib/src/sync/](../../packages/autolife-core/lib/src/sync/) (Drift DB, `SyncEngine`, `ConnectivityWatcher`, `ConflictResolver`, `DriftOfflineWriteQueue`, encryption), [packages/autolife-core/test/sync/](../../packages/autolife-core/test/sync/) |
+| 1.7 | Done | [phase1.7_integration_gateway_scaffold.plan.md](phase1.7_integration_gateway_scaffold.plan.md) | [docs/integration-connector-contract.md](../../docs/integration-connector-contract.md), [packages/autolife-core/lib/src/integrations/](../../packages/autolife-core/lib/src/integrations/), [supabase/migrations/0020_connector_credentials.sql](../../supabase/migrations/0020_connector_credentials.sql), [supabase/functions/oauth-callback/](../../supabase/functions/oauth-callback/), [packages/autolife-core/test/integrations/](../../packages/autolife-core/test/integrations/) |
+| 1.8 | Done | [phase1.8_end_to_end_smoke_test.plan.md](phase1.8_end_to_end_smoke_test.plan.md) | [apps/autolife-shell/lib/src/screens/smoke/](../../apps/autolife-shell/lib/src/screens/smoke/), [apps/autolife-shell/lib/main.dart](../../apps/autolife-shell/lib/main.dart) (smoke tab + connector prime), [apps/autolife-shell/integration_test/phase1_smoke_test.dart](../../apps/autolife-shell/integration_test/phase1_smoke_test.dart), [docs/phase1-smoke.md](../../docs/phase1-smoke.md), [supabase/functions/process-event/registry.ts](../../supabase/functions/process-event/registry.ts) (`dashboard` consumer), [.github/workflows/ci.yml](../../.github/workflows/ci.yml) (Supabase + Linux smoke job; mirror [docs/phase1-smoke.md](../../docs/phase1-smoke.md) on Windows with `-d windows` or Chrome) |
+
+*Ledger last aligned with repo: 2026-05-11.*
+
 ### Phase 1: Platform Architecture + Techstack Integration
-- [ ] **1.1** Monorepo + workspace setup (Melos, pubspecs, CI) -- [phase1.1_monorepo_workspace_setup.plan.md](phase1.1_monorepo_workspace_setup.plan.md)
-- [ ] **1.2** Shared domain contracts (`packages/autolife-core`: models, events, services) -- [phase1.2_autolife_core_contracts.plan.md](phase1.2_autolife_core_contracts.plan.md)
-- [ ] **1.3** Shared design system (`packages/autolife-ui`: theme, tokens, components) -- [phase1.3_autolife_ui_design_system.plan.md](phase1.3_autolife_ui_design_system.plan.md)
-- [ ] **1.4** Supabase baseline (DB schema, auth config, storage buckets, Edge Functions scaffold) -- [phase1.4_supabase_baseline.plan.md](phase1.4_supabase_baseline.plan.md)
-- [ ] **1.5** Event bus + `process-event` worker (producer/consumer contracts, retry/DLQ) -- [phase1.5_event_bus_process_event_worker.plan.md](phase1.5_event_bus_process_event_worker.plan.md)
-- [ ] **1.6** Offline/sync foundation (local cache, write queue, conflict strategy) -- [phase1.6_offline_sync_foundation.plan.md](phase1.6_offline_sync_foundation.plan.md)
-- [ ] **1.7** Integration gateway scaffold (connector lifecycle, credential storage) -- [phase1.7_integration_gateway_scaffold.plan.md](phase1.7_integration_gateway_scaffold.plan.md)
-- [ ] **1.8** End-to-end smoke test (one happy-path flow proving the full stack works together) -- [phase1.8_end_to_end_smoke_test.plan.md](phase1.8_end_to_end_smoke_test.plan.md)
-- **Gate**: Flutter workspace + `autolife-core` + `autolife-ui` + Supabase (DB/auth/storage/functions/events/sync) work together end-to-end
+- [x] **1.1** Monorepo + workspace setup (Melos, pubspecs, CI) -- [phase1.1_monorepo_workspace_setup.plan.md](phase1.1_monorepo_workspace_setup.plan.md)
+- [x] **1.2** Shared domain contracts (`packages/autolife-core`: models, events, services) -- [phase1.2_autolife_core_contracts.plan.md](phase1.2_autolife_core_contracts.plan.md)
+- [x] **1.3** Shared design system (`packages/autolife-ui`: theme, tokens, components) -- [phase1.3_autolife_ui_design_system.plan.md](phase1.3_autolife_ui_design_system.plan.md)
+- [x] **1.4** Supabase baseline (DB schema, auth config, storage buckets, Edge Functions scaffold) -- [phase1.4_supabase_baseline.plan.md](phase1.4_supabase_baseline.plan.md)
+- [x] **1.5** Event bus + `process-event` worker (producer/consumer contracts, retry/DLQ) -- [phase1.5_event_bus_process_event_worker.plan.md](phase1.5_event_bus_process_event_worker.plan.md)
+- [x] **1.6** Offline/sync foundation (local cache, write queue, conflict strategy) -- [phase1.6_offline_sync_foundation.plan.md](phase1.6_offline_sync_foundation.plan.md)
+- [x] **1.7** Integration gateway scaffold (connector lifecycle, credential storage) -- [phase1.7_integration_gateway_scaffold.plan.md](phase1.7_integration_gateway_scaffold.plan.md)
+- [x] **1.8** End-to-end smoke test (one happy-path flow proving the full stack works together) -- [phase1.8_end_to_end_smoke_test.plan.md](phase1.8_end_to_end_smoke_test.plan.md)
+- **Gate**: Flutter workspace + `autolife-core` + `autolife-ui` + Supabase (DB/auth/storage/functions/events/sync) work together end-to-end — **met** (smoke path in 1.8; CI runs full smoke on Linux; local verification on [docs/phase1-smoke.md](../../docs/phase1-smoke.md))
 
 ### Phase 2: Security Hardening + Login
 - [ ] **2.1** Auth flows (sign up, login, password reset, social/OAuth, session management) -- [phase2.1_auth_flows.plan.md](phase2.1_auth_flows.plan.md)
@@ -248,7 +265,7 @@ Use this template so each plan is consistent and progress is measurable.
 - **Artifacts/links**: (PRs, docs, diagrams)
 
 ## Definition of Done
-- [ ] Phase 1 gate met (architecture + stack works end-to-end)
+- [x] Phase 1 gate met (architecture + stack works end-to-end) — *1.1–1.8 complete in-repo; smoke + contracts linked in ledger*
 - [ ] Phase 2 gate met (login + security + RLS enforced)
 - [ ] Phase 3 MVP gate met (Shell + Calendar + Tasks + Assets implemented to v1)
 - [ ] Phase 3 Full App gate met (all expansion apps + control center + QoL to v1)
@@ -257,9 +274,13 @@ Use this template so each plan is consistent and progress is measurable.
 
 ## Next Step
 
-**Mode:** Plan
+**Done in-repo:** Phase 1 complete — 1.1 through 1.8 (including offline/sync, integration gateway, and end-to-end smoke). Evidence and paths: **Phase 1 implementation ledger** above; manual runbook [docs/phase1-smoke.md](../../docs/phase1-smoke.md).
+
+**Next:** Phase 2.1 — Auth flows — [phase2.1_auth_flows.plan.md](phase2.1_auth_flows.plan.md).
+
+**Mode:** Plan (or Agent to implement 2.1)
 **Model:** Auto
-**Skill:** plan
+**Skill:** plan / implement
 **Prompt (ready to paste):**
 
-> /plan Phase 1 of the AutoLife overarching architecture plan: Platform Architecture + Techstack Integration. Sub-phases: 1.1 Monorepo+workspace setup, 1.2 Shared domain contracts, 1.3 Shared design system, 1.4 Supabase baseline, 1.5 Event bus+worker, 1.6 Offline/sync foundation, 1.7 Integration gateway scaffold, 1.8 End-to-end smoke test. Gate: the full stack works together in at least one happy-path flow. Reference the overarching plan at `.cursor/plans/autolife_overarching_architecture_plan_e0168493.plan.md` for context.
+> /implement Phase 2.1 of the AutoLife overarching architecture plan per [phase2.1_auth_flows.plan.md](phase2.1_auth_flows.plan.md). Phase 1 is complete; reference `.cursor/plans/autolife_overarching_architecture_plan_e0168493.plan.md` for sequencing.
