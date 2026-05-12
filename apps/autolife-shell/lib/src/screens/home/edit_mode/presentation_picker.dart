@@ -17,16 +17,23 @@ Future<DashboardOverflowMode?> showPresentationPicker(
               title: Text('Display mode'),
               subtitle: Text('How your dashboard uses the screen'),
             ),
-            ...DashboardOverflowMode.values.map(
-              (m) => RadioListTile<DashboardOverflowMode>(
-                    value: m,
-                    groupValue: current,
-                    title: Text(_label(m)),
-                    subtitle: Text(_hint(m)),
-                    onChanged: (v) {
-                      if (v != null) Navigator.of(ctx).pop(v);
-                    },
-                  ),
+            RadioGroup<DashboardOverflowMode>(
+              groupValue: current,
+              onChanged: (v) {
+                Navigator.of(ctx).pop(v);
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: DashboardOverflowMode.values
+                    .map(
+                      (m) => RadioListTile<DashboardOverflowMode>(
+                        value: m,
+                        title: Text(_label(m)),
+                        subtitle: Text(_hint(m)),
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
             const SizedBox(height: 12),
           ],
