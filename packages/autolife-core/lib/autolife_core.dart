@@ -67,8 +67,16 @@ export 'src/policy/role_policy_service.dart';
 /// Canonical persisted event for the AutoLife event bus (`system_event`).
 export 'src/models/system_event.dart';
 
-/// Local calendar row model (feature schemas may extend in later phases).
+/// Local calendar row model (`calendar_events`) + phase 3.2 calendar module exports.
 export 'src/models/calendar_event.dart';
+export 'src/calendar/calendar_attendee.dart';
+export 'src/calendar/calendar_event_attachment.dart';
+export 'src/calendar/calendar_event_link.dart';
+export 'src/calendar/calendar_import_batch.dart';
+export 'src/calendar/calendar_recurrence.dart';
+export 'src/calendar/calendar_reminder.dart';
+export 'src/calendar/calendar_events_emitter.dart';
+export 'src/calendar/calendar_repository.dart';
 
 /// Dashboard shell contracts / registry (phase 3.1).
 export 'src/dashboard/dashboard_adaptive_mode.dart';

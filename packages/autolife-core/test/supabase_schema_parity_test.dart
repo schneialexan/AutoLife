@@ -179,4 +179,50 @@ void main() {
       }
     },
   );
+
+  test('calendar phase 3.2 migration defines calendar tables + RLS', () {
+    final sql = File(
+      p.join(
+        repoRoot,
+        'supabase/migrations/20260512170000_calendar_phase_3_2.sql',
+      ),
+    ).readAsStringSync();
+    for (final token in [
+      'create table public.calendar_events',
+      'calendar_recurrence_exceptions',
+      'calendar_sync_links',
+      'calendar_import_batches',
+      'calendar_events_member',
+      'external_uid',
+      'sensitivity_assignments',
+    ]) {
+      expect(
+        sql.contains(token),
+        isTrue,
+        reason: 'Expected calendar migration to include $token',
+      );
+    }
+  });
+
+  test('calendar rich fields migration adds jsonb columns', () {
+    final sql = File(
+      p.join(
+        repoRoot,
+        'supabase/migrations/20260512180000_calendar_event_rich_fields.sql',
+      ),
+    ).readAsStringSync();
+    for (final token in [
+      'event_links',
+      'event_attachments',
+      'related_event_ids',
+      'event_attendees',
+      'sensitivity_assignments',
+    ]) {
+      expect(
+        sql.contains(token),
+        isTrue,
+        reason: 'Expected rich-fields migration to include $token',
+      );
+    }
+  });
 }

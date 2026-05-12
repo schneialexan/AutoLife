@@ -70,6 +70,8 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
       qb = qb.eq('family_id', familyScoped).isFilter('removed_at', null);
     } else if (table == 'families') {
       qb = qb.eq('id', familyScoped);
+    } else if (table == 'calendar_events') {
+      qb = qb.eq('family_id', familyScoped);
     }
 
     if (updatedAfter != null) {
@@ -86,6 +88,9 @@ class SupabaseRemoteSyncGateway implements RemoteSyncGateway {
     required Map<String, dynamic> payload,
   }) async {
     switch (operation) {
+      case 'upsert':
+        await _client.from(table).upsert(payload);
+        return;
       case 'insert':
         await _client.from(table).insert(payload);
         return;
@@ -163,5 +168,7 @@ class NoopRemoteSyncGateway implements RemoteSyncGateway {
     required String table,
     required String operation,
     required Map<String, dynamic> payload,
-  }) async {}
+  }) async {
+    // No-op: includes `upsert` used by calendar offline queue in harness tests.
+  }
 }

@@ -34,6 +34,39 @@ void main() {
     expect(parsed.startAt.toUtc(), value.startAt.toUtc());
   });
 
+  test('CalendarEvent rich fields JSON roundtrip', () {
+    final value = CalendarEvent(
+      id: 'c1',
+      familyId: 'f1',
+      title: 'Meet',
+      startAt: DateTime.utc(2026, 5, 10, 9),
+      endAt: DateTime.utc(2026, 5, 10, 10),
+      allDay: false,
+      createdBy: 'u1',
+      syncSource: 'internal',
+      createdAt: DateTime.utc(2026, 5, 1),
+      updatedAt: DateTime.utc(2026, 5, 2),
+      links: const [
+        CalendarEventLink(url: 'https://example.com', label: 'Doc'),
+      ],
+      attachments: const [
+        CalendarEventAttachment(
+          filename: 'a.png',
+          mimeType: 'image/png',
+        ),
+      ],
+      relatedEventIds: const ['550e8400-e29b-41d4-a716-446655440000'],
+      attendees: const [
+        CalendarAttendee(email: 'a@b.com', displayName: 'Alex'),
+      ],
+    );
+    final parsed = CalendarEvent.fromJson(value.toJson());
+    expect(parsed.links.single.url, 'https://example.com');
+    expect(parsed.attachments.single.filename, 'a.png');
+    expect(parsed.relatedEventIds.single, value.relatedEventIds.single);
+    expect(parsed.attendees.single.email, 'a@b.com');
+  });
+
   test('CalendarEvent handles null optionals', () {
     final json = <String, dynamic>{
       'id': 'c1',
@@ -61,5 +94,9 @@ void main() {
     expect(parsed.assignedTo, isNull);
     expect(parsed.color, isNull);
     expect(parsed.externalId, isNull);
+    expect(parsed.links, isEmpty);
+    expect(parsed.attachments, isEmpty);
+    expect(parsed.relatedEventIds, isEmpty);
+    expect(parsed.attendees, isEmpty);
   });
 }
