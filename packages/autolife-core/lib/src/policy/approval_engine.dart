@@ -42,7 +42,7 @@ final class ApprovalAutoRule {
     final want = match['location_normalized'];
     if (want == null || '$want'.isEmpty) return false;
     final got = approvalNormalizeLocationToken(payload['location']);
-    return got == '${want}'.toLowerCase();
+    return got == '$want'.toLowerCase();
   }
 
   factory ApprovalAutoRule.fromRow(Map<String, dynamic> raw) =>
@@ -276,7 +276,7 @@ final class ApprovalEngine {
       'approval_id': id,
       'family_id': rowSnapshot['family_id'],
       'status': desiredStatus,
-    }, ik: '$id:resolved:${desiredStatus}');
+    }, ik: '$id:resolved:$desiredStatus');
 
     return Result.success(UnmodifiableMapView(rowSnapshot));
   }
@@ -286,8 +286,9 @@ final class ApprovalEngine {
     required ApprovalPersistFn persist,
   }) async {
     final status = '${rowSnapshot['status']}';
-    if (status != 'pending')
+    if (status != 'pending') {
       return Result.success(UnmodifiableMapView(rowSnapshot));
+    }
 
     final expIso = rowSnapshot['expires_at'] as String?;
     if (expIso == null) return Result.success(UnmodifiableMapView(rowSnapshot));
