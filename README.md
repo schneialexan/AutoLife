@@ -38,6 +38,11 @@ Run these from the repository root:
 ```sh
 cd apps/autolife-shell
 flutter run -d chrome
+
+supabase status
+flutter run -d chrome `
+   --dart-define=SUPABASE_URL=http://127.0.0.1:54321 `
+   --dart-define=AUTOLIFE_SUPABASE_ANON_KEY=sb_secret_XXXXX
 ```
 
 ## Layout

@@ -11,6 +11,8 @@ isProject: false
 ## Objective
 Deliver `auto-health` as a privacy-critical expansion app that gives each family member a personal, profile-aware health surface: ML-assisted cycle tracking (women-only), a granular symptom and mood logger, product usage tracking that cross-links to `auto-dine`, workout + dynamic calorie tracking, a medication tracker with a refill task loop into `auto-tasks`, and a secure medical passport. The app must enforce biometric gating and the phase 2.5 privacy tiers: by default nothing is shared, and users can opt in to share at most a "phase only" pill to the shared family calendar.
 
+**Privacy contract (Phase 2.5):** Canonical tier meanings, babysitter `babysitter_scope` resource keys, and the biometric lock telemetry contract are documented in [docs/privacy-tiers.md](../../docs/privacy-tiers.md).
+
 ## UI reference
 ![AutoHealth](../../assets/autohealth.png)
 
