@@ -78,6 +78,22 @@ export 'src/calendar/calendar_reminder.dart';
 export 'src/calendar/calendar_events_emitter.dart';
 export 'src/calendar/calendar_repository.dart';
 
+/// Tasks module (phase 3.3).
+export 'src/tasks/task.dart';
+export 'src/tasks/task_attachment.dart';
+export 'src/tasks/task_dependency.dart';
+export 'src/tasks/task_link.dart';
+export 'src/tasks/task_list.dart';
+export 'src/tasks/task_list_pdf_request.dart';
+export 'src/tasks/task_priority.dart';
+export 'src/tasks/task_reminder.dart';
+export 'src/tasks/task_repository.dart';
+export 'src/tasks/task_smart_rule.dart';
+export 'src/tasks/task_status.dart';
+export 'src/tasks/task_step.dart';
+export 'src/tasks/task_template.dart';
+export 'src/tasks/tasks_events_emitter.dart';
+
 /// Dashboard shell contracts / registry (phase 3.1).
 export 'src/dashboard/dashboard_adaptive_mode.dart';
 export 'src/dashboard/dashboard_defaults.dart';

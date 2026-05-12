@@ -2,6 +2,7 @@ import 'package:auto_calendar/src/providers/calendar_providers.dart';
 import 'package:auto_calendar/src/screens/calendar/event_detail_screen.dart';
 import 'package:auto_calendar/src/screens/calendar/widgets/event_accent_color.dart';
 import 'package:auto_calendar/src/screens/calendar/widgets/weather_overlay.dart';
+import 'package:auto_calendar/src/screens/calendar/widgets/day_due_strip.dart';
 import 'package:autolife_core/autolife_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +53,8 @@ class _MonthDayCellState extends ConsumerState<MonthDayCell> {
     final timed = widget.events.where((e) => !e.allDay).toList()
       ..sort((a, b) => a.startAt.compareTo(b.startAt));
     final rows = <CalendarEvent>[...allDay, ...timed];
+    final dueTasks =
+        ref.watch(tasksDueOnDayProvider(widget.day)).take(3).toList();
 
     final timeFmt = DateFormat.jm('en');
     return Container(
@@ -89,6 +92,18 @@ class _MonthDayCellState extends ConsumerState<MonthDayCell> {
               ),
             ],
           ),
+          if (dueTasks.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            SizedBox(
+              height: 22,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: dueTasks.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 4),
+                itemBuilder: (c, i) => TaskDueChip(task: dueTasks[i]),
+              ),
+            ),
+          ],
           const SizedBox(height: 2),
           Expanded(
             child: MouseRegion(

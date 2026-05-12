@@ -289,6 +289,13 @@ class EventDetailScreen extends ConsumerWidget {
                           },
                   );
                 }),
+              if (event.linkedTaskId != null)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.task_alt),
+                  title: const Text('Linked task'),
+                  subtitle: Text(event.linkedTaskId!),
+                ),
               const SizedBox(height: 16),
               _sectionTitle(context, 'Sync & metadata'),
               ListTile(

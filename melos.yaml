@@ -42,6 +42,10 @@ scripts:
   test:shell:
     run: melos exec -c 1 --fail-fast --scope=autolife_shell --dir-exists=test -- flutter test
 
+  test:tasks:
+    run: melos exec -c 1 --fail-fast --scope=auto_tasks --dir-exists=test -- flutter test
+    description: Flutter tests for auto_tasks (phase 3.3).
+
   supabase:reset:
     run: supabase db reset
     description: Reset local Supabase DB, apply migrations, and run seed.sql.
@@ -51,4 +55,5 @@ scripts:
       - melos run test:core
       - melos run test:ui
       - melos run test:shell
+      - melos run test:tasks
     description: Run Dart and Flutter tests for workspace packages.

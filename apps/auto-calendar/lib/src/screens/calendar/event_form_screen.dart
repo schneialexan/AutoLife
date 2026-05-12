@@ -360,6 +360,8 @@ class _EventFormScreenState extends ConsumerState<EventFormScreen> {
       commuteMeta: existing?.commuteMeta,
       color: existing?.color,
       assignedTo: existing?.assignedTo,
+      isTaskBlock: existing?.isTaskBlock ?? false,
+      linkedTaskId: existing?.linkedTaskId,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     );

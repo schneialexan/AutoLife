@@ -1,6 +1,7 @@
+import 'package:auto_calendar/src/providers/calendar_providers.dart';
 import 'package:auto_calendar/src/screens/calendar/widgets/event_card.dart';
 import 'package:auto_calendar/src/screens/calendar/widgets/weather_overlay.dart';
-import 'package:auto_calendar/src/providers/calendar_providers.dart';
+import 'package:auto_calendar/src/screens/calendar/widgets/day_due_strip.dart';
 import 'package:autolife_core/autolife_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -96,6 +97,7 @@ class DayView extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 12),
+            DayDueStrip(dayUtc: start),
             if (visible.isEmpty)
               const Center(child: Text('No events this day'))
             else

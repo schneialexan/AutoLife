@@ -37,6 +37,8 @@ class CalendarEvent {
     this.attachments = const [],
     this.relatedEventIds = const [],
     this.attendees = const [],
+    this.isTaskBlock = false,
+    this.linkedTaskId,
   });
 
   final String id;
@@ -70,6 +72,10 @@ class CalendarEvent {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  /// When true, this event is a scheduled work block for [linkedTaskId].
+  final bool isTaskBlock;
+  final String? linkedTaskId;
+
   CalendarEvent copyWith({
     String? id,
     String? familyId,
@@ -101,6 +107,8 @@ class CalendarEvent {
     List<CalendarAttendee>? attendees,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? isTaskBlock,
+    String? linkedTaskId,
   }) => CalendarEvent(
     id: id ?? this.id,
     familyId: familyId ?? this.familyId,
@@ -133,6 +141,8 @@ class CalendarEvent {
     attendees: attendees ?? this.attendees,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    isTaskBlock: isTaskBlock ?? this.isTaskBlock,
+    linkedTaskId: linkedTaskId ?? this.linkedTaskId,
   );
 
   factory CalendarEvent.fromJson(Map<String, dynamic> json) {
@@ -246,6 +256,8 @@ class CalendarEvent {
       attendees: parseAttendees(json['event_attendees']),
       createdAt: parseTs('created_at'),
       updatedAt: parseTs('updated_at'),
+      isTaskBlock: json['is_task_block'] as bool? ?? false,
+      linkedTaskId: json['linked_task_id']?.toString(),
     );
   }
 
@@ -281,5 +293,7 @@ class CalendarEvent {
     'event_attendees': attendees.map((e) => e.toJson()).toList(),
     'created_at': createdAt.toUtc().toIso8601String(),
     'updated_at': updatedAt.toUtc().toIso8601String(),
+    'is_task_block': isTaskBlock,
+    'linked_task_id': linkedTaskId,
   };
 }

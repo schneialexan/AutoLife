@@ -1,0 +1,32 @@
+name: auto_tasks
+description: AutoLife task engine (phase 3.3).
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  autolife_core:
+    path: ../../packages/autolife-core
+  autolife_ui:
+    path: ../../packages/autolife-ui
+  collection: ^1.19.0
+  cupertino_icons: ^1.0.8
+  file_picker: ^8.1.4
+  flutter_riverpod: ^2.6.1
+  intl: ^0.20.2
+  shared_preferences: ^2.5.3
+  meta: ^1.16.0
+  supabase: ^2.10.0
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

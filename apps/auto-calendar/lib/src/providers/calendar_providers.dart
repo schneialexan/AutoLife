@@ -117,6 +117,63 @@ final calendarCommuteEnabledProvider = Provider<bool>((ref) => true);
 
 final calendarWeatherStressProvider = Provider<double>((ref) => 0.5);
 
+const _kPrefShowTasksOnCalendar = 'auto_calendar.show_tasks_on_calendar';
+
+/// In-memory task list for calendar overlay + convert flows (override in shell).
+final calendarTaskRepositoryProvider =
+    Provider<MemoryTaskRepository>((ref) => MemoryTaskRepository());
+
+class CalendarShowTasksOverlayNotifier extends StateNotifier<bool> {
+  CalendarShowTasksOverlayNotifier({this.restoreFromDisk = true})
+      : super(true) {
+    if (restoreFromDisk) _restore();
+  }
+
+  CalendarShowTasksOverlayNotifier.seeded(super.initial)
+      : restoreFromDisk = false;
+
+  final bool restoreFromDisk;
+
+  Future<void> _restore() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    state = prefs.getBool(_kPrefShowTasksOnCalendar) ?? true;
+  }
+
+  Future<void> setShow(bool v) async {
+    state = v;
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    await prefs.setBool(_kPrefShowTasksOnCalendar, v);
+  }
+}
+
+final calendarShowTasksOverlayProvider =
+    StateNotifierProvider<CalendarShowTasksOverlayNotifier, bool>((ref) {
+  return CalendarShowTasksOverlayNotifier();
+});
+
+/// Incomplete tasks with `dueAt` on the same UTC calendar day as [dayUtc].
+final tasksDueOnDayProvider =
+    Provider.family<List<Task>, DateTime>((ref, dayUtc) {
+  final show = ref.watch(calendarShowTasksOverlayProvider);
+  if (!show) return const [];
+  final repo = ref.watch(calendarTaskRepositoryProvider);
+  final familyId = ref.watch(calendarFamilyIdProvider);
+  final day = calendarUtcDateOnly(dayUtc);
+  return repo.snapshotTasks(familyId).where((t) {
+    if (t.status == TaskStatus.completed) return false;
+    final d = t.dueAt;
+    if (d == null) return false;
+    return calendarIsSameUtcDate(d, day);
+  }).toList()
+    ..sort(
+      (a, b) => (a.dueAt ?? DateTime.fromMillisecondsSinceEpoch(0)).compareTo(
+            b.dueAt ?? DateTime.fromMillisecondsSinceEpoch(0),
+          ),
+    );
+});
+
 /// Persists phone week sub-mode (2-day table pager vs stacked agenda).
 class MobileWeekPrefsNotifier extends StateNotifier<MobileWeekMode> {
   MobileWeekPrefsNotifier({this.restoreFromDisk = true})

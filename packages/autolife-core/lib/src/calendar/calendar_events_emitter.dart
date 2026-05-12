@@ -56,6 +56,26 @@ class CalendarEventsEmitter {
     envelope,
   );
 
+  /// When a task-block event is moved/resized; tasks module consumes this.
+  Future<void> emitLinkedTaskUpdate({
+    required String eventId,
+    required String linkedTaskId,
+    required String familyId,
+    required DateTime startAt,
+    required DateTime endAt,
+    required EventEnvelope envelope,
+  }) => _emit(
+    'event.linked_task_update',
+    {
+      'event_id': eventId,
+      'linked_task_id': linkedTaskId,
+      'family_id': familyId,
+      'start_at': startAt.toUtc().toIso8601String(),
+      'end_at': endAt.toUtc().toIso8601String(),
+    },
+    envelope,
+  );
+
   Map<String, dynamic> _eventPayload(CalendarEvent e) => {
     'event': e.toJson(),
   };

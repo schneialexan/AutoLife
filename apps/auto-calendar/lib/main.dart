@@ -10,10 +10,38 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('en');
   final repo = MemoryCalendarRepository();
+  final taskRepo = MemoryTaskRepository();
+  final now = DateTime.now().toUtc();
+  const fam = 'demo-family';
+  taskRepo.seedLists([
+    TaskList(
+      id: 'list-grocery',
+      familyId: fam,
+      name: 'Groceries',
+      createdAt: now,
+      updatedAt: now,
+    ),
+  ]);
+  taskRepo.seedTasks([
+    Task(
+      id: 'task-due-sample',
+      familyId: fam,
+      listId: 'list-grocery',
+      title: 'Buy milk',
+      status: TaskStatus.active,
+      priority: TaskPriority.medium,
+      importance: false,
+      dueAt: DateTime.utc(now.year, now.month, now.day, 17, 0),
+      createdBy: '11111111-1111-1111-1111-111111111111',
+      createdAt: now,
+      updatedAt: now,
+    ),
+  ]);
   runApp(
     ProviderScope(
       overrides: [
         calendarRepositoryProvider.overrideWithValue(repo),
+        calendarTaskRepositoryProvider.overrideWithValue(taskRepo),
       ],
       child: const AutoCalendarApp(),
     ),
