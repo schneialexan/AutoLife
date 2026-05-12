@@ -49,6 +49,7 @@ Use this skill to turn a messy working tree into one or more intentional commits
 
 6. Commit:
    - Pass the message via heredoc or equivalent multi-line-safe shell syntax. Use plain `-m` / heredoc only — no `--trailer` for Co-authored-by or Cursor attribution.
+   - Keep the commit short and precise; avoid long sentences and over-detailed explanations.
    - After commit, run `git status --short --branch`.
    - Report commit hash, subject, included change groups, and any files left uncommitted.
 
