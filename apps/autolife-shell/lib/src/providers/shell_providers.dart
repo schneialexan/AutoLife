@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:autolife_core/autolife_core.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:drift/drift.dart';
@@ -7,9 +9,15 @@ import 'package:supabase/supabase.dart';
 
 import 'auth_provider.dart';
 import 'tenancy_provider.dart';
+import '../shell/shell_workspace_data.dart';
 
 /// Resolved tenant for smoke / shell demo (`system_event.tenant_id`, text).
 final shellTenantIdProvider = Provider<String>((ref) => 'local-dev');
+
+/// Authenticated-family workspace (overridden after tenancy bootstrap).
+final shellWorkspaceProvider = Provider<ShellWorkspaceData>(
+  (ref) => throw StateError('shellWorkspaceProvider unbound'),
+);
 
 /// Seeded `family.id` for local Supabase (`supabase/seed.sql`); used for UUID-scoped tables on pull.
 const shellDemoFamilyScopeUuid = String.fromEnvironment(
@@ -44,14 +52,22 @@ final shellPayloadCipherProvider = Provider<PayloadCipher>(
 
 final shellEventProducerProvider = Provider<EventProducer>((ref) {
   final sync = ref.read(syncEngineProvider);
-  final client = ref.watch(supabaseClientProvider);
-  return OfflineAwareEventProducer(
-    onlineProducer: SupabaseEventProducer(client),
-    offlineQueue: sync.offlineWriteQueue,
-    probeOnline: () =>
-        ref.read(syncEngineProvider).connectivityWatcher.isOnline(),
-    defaultActorId: 'shell-actor',
-  );
+  try {
+    final client = ref.watch(supabaseClientProvider);
+    return OfflineAwareEventProducer(
+      onlineProducer: SupabaseEventProducer(client),
+      offlineQueue: sync.offlineWriteQueue,
+      probeOnline: () => sync.connectivityWatcher.isOnline(),
+      defaultActorId: 'shell-actor',
+    );
+  } on StateError catch (_) {
+    return OfflineAwareEventProducer(
+      onlineProducer: const IgnoringEventProducer(),
+      offlineQueue: sync.offlineWriteQueue,
+      probeOnline: () async => false,
+      defaultActorId: 'shell-actor',
+    );
+  }
 });
 
 List<Override> smokeSupabaseOverrides({
@@ -119,6 +135,39 @@ List<Override> smokeSupabaseOverrides({
             ref.read(syncEngineProvider).connectivityWatcher.isOnline(),
         defaultActorId: 'shell-actor',
       );
+    }),
+  ];
+}
+
+/// Shared DB + sync wiring when Supabase env vars are absent (phase 3.1).
+List<Override> localOfflineBootstrapOverrides() {
+  final db = AutolifeDatabase.memory();
+  return [
+    autolifeDatabaseProvider.overrideWithValue(db),
+    syncEngineProvider.overrideWith((ref) {
+      final engine = SyncEngine(
+        db: ref.watch(autolifeDatabaseProvider),
+        gateway: const NoopRemoteSyncGateway(),
+        connectivity: ConnectivityWatcher.fake(
+          stream: Stream<bool>.value(false),
+          initialOnline: false,
+        ),
+        cipher: ref.watch(shellPayloadCipherProvider),
+        conflictResolver: LastWriterWinsResolver(),
+        tenantId: ref.watch(shellTenantIdProvider),
+      );
+      void onEngineUpdate() {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          ref.read(syncStatusTickProvider.notifier).state++;
+        });
+      }
+
+      engine.addListener(onEngineUpdate);
+      ref.onDispose(() {
+        engine.removeListener(onEngineUpdate);
+        engine.dispose();
+      });
+      return engine;
     }),
   ];
 }

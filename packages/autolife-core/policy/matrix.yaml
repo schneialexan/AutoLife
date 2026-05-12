@@ -25,6 +25,10 @@ capabilities:
     description: View allowance balances.
   allowance.manage:
     description: Configure allowance rules and payouts.
+  dashboard.customize_own:
+    description: Customize personal Home dashboard layout (edit mode).
+  dashboard.customize_family_default:
+    description: Curate the family default dashboard seeded for new members (owner only).
 
 # Default capability cells: granted + approval / chore enforcement flags.
 # requires_parent_approval: if true, sensitive actions create an approval request before taking effect.
@@ -42,6 +46,8 @@ matrix:
     family.manage_policy: { granted: true, requires_parent_approval: false }
     allowance.view: { granted: true, requires_parent_approval: false }
     allowance.manage: { granted: true, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: true, requires_parent_approval: false }
 
   partner:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -55,6 +61,8 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: true, requires_parent_approval: false }
     allowance.manage: { granted: true, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }
 
   teenager:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -72,6 +80,8 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: true, requires_parent_approval: false }
     allowance.manage: { granted: false, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }
 
   child:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -89,6 +99,8 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: true, requires_parent_approval: false }
     allowance.manage: { granted: false, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }
 
   grandparent:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -102,6 +114,8 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: false, requires_parent_approval: false }
     allowance.manage: { granted: false, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }
 
   guest:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -115,6 +129,8 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: false, requires_parent_approval: false }
     allowance.manage: { granted: false, requires_parent_approval: false }
+    dashboard.customize_own: { granted: false, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }
 
   babysitter:
     calendar.view: { granted: true, requires_parent_approval: false }
@@ -128,3 +144,5 @@ matrix:
     family.manage_policy: { granted: false, requires_parent_approval: false }
     allowance.view: { granted: false, requires_parent_approval: false }
     allowance.manage: { granted: false, requires_parent_approval: false }
+    dashboard.customize_own: { granted: true, requires_parent_approval: false }
+    dashboard.customize_family_default: { granted: false, requires_parent_approval: false }

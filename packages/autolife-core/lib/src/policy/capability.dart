@@ -13,6 +13,8 @@ enum Capability {
   choresCompleteTask('chores.complete_task'),
   choresManageAssignments('chores.manage_assignments'),
   choresViewAssigned('chores.view_assigned'),
+  dashboardCustomizeFamilyDefault('dashboard.customize_family_default'),
+  dashboardCustomizeOwn('dashboard.customize_own'),
   familyInviteMembers('family.invite_members'),
   familyManagePolicy('family.manage_policy'),
   familyViewMembers('family.view_members');

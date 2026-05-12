@@ -6,18 +6,22 @@ import 'package:autolife_ui/src/tokens/spacing.dart';
 ///
 /// Omnibar field used directly or via the [AutoOmnibar] alias.
 class AutoLifeOmnibar extends StatelessWidget {
-  /// Debounced-style submission fires when the user presses "done" on the keyboard.
+  /// Submission fires when the user presses "done" on the keyboard.
   const AutoLifeOmnibar({
     super.key,
     this.controller,
     this.hintText = 'Search calendar, tasks, assets…',
     required this.onSubmitted,
+    this.onChanged,
     this.autofocus = false,
   });
 
   final TextEditingController? controller;
   final String hintText;
   final ValueChanged<String> onSubmitted;
+
+  /// Optional live typing hook (debounce in caller).
+  final ValueChanged<String>? onChanged;
   final bool autofocus;
 
   @override
@@ -36,6 +40,7 @@ class AutoLifeOmnibar extends StatelessWidget {
             vertical: AutoLifeSpacing.sm,
           ),
         ),
+        onChanged: onChanged,
         onSubmitted: onSubmitted,
       ),
     );

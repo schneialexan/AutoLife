@@ -70,6 +70,23 @@ export 'src/models/system_event.dart';
 /// Local calendar row model (feature schemas may extend in later phases).
 export 'src/models/calendar_event.dart';
 
+/// Dashboard shell contracts / registry (phase 3.1).
+export 'src/dashboard/dashboard_adaptive_mode.dart';
+export 'src/dashboard/dashboard_defaults.dart';
+export 'src/dashboard/dashboard_form_factor.dart';
+export 'src/dashboard/dashboard_layout.dart';
+export 'src/dashboard/dashboard_layout_repository.dart';
+export 'src/dashboard/dashboard_presentation.dart';
+export 'src/dashboard/dashboard_preset.dart';
+export 'src/dashboard/dashboard_query.dart';
+export 'src/dashboard/dashboard_row.dart';
+export 'src/dashboard/dashboard_scope.dart';
+export 'src/dashboard/dashboard_size.dart';
+export 'src/dashboard/dashboard_tile.dart';
+export 'src/dashboard/dashboard_widget_registry.dart';
+export 'src/dashboard/dashboard_widget_spec.dart';
+export 'src/dashboard/omnibar_search_result.dart';
+
 /// Supabase-backed auth façade (phase 2.1).
 export 'src/auth/auth_service.dart';
 export 'src/auth/models/auth_error.dart';

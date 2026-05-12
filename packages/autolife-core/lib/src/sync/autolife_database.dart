@@ -6,6 +6,7 @@ import 'tables/event_delivery_cache.dart';
 import 'tables/event_delivery_status_map.dart';
 import 'tables/family_cache.dart';
 import 'tables/membership_cache.dart';
+import 'tables/dashboard_layout_cache.dart';
 import 'tables/pending_write.dart';
 import 'tables/profile_cache.dart';
 import 'tables/system_event_cache.dart';
@@ -21,6 +22,7 @@ part 'autolife_database.g.dart';
     FamilyCache,
     MembershipCache,
     PendingWrites,
+    DashboardLayoutCache,
   ],
 )
 class AutolifeDatabase extends _$AutolifeDatabase {
@@ -35,7 +37,7 @@ class AutolifeDatabase extends _$AutolifeDatabase {
       AutolifeDatabase(openFileConnection(filename));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -47,6 +49,9 @@ class AutolifeDatabase extends _$AutolifeDatabase {
         await migrator.createTable(familyCache);
         await migrator.createTable(membershipCache);
         await migrator.createTable(profileCache);
+      }
+      if (from < 3) {
+        await migrator.createTable(dashboardLayoutCache);
       }
     },
   );

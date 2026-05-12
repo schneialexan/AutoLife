@@ -562,6 +562,17 @@ class SyncEngine extends ChangeNotifier {
           operation: row.operation,
           payload: body,
         );
+        // Offline shell / tests use [NoopRemoteSyncGateway]; still mirror queued
+        // `system_event` inserts into Drift so dashboard widgets stay coherent.
+        if (_gateway is NoopRemoteSyncGateway &&
+            row.targetTable == 'system_event' &&
+            row.operation == 'insert') {
+          final remoteLike = Map<String, dynamic>.from(body);
+          remoteLike['id'] ??= remoteLike['idempotency_key'];
+          remoteLike['updated_at'] ??=
+              remoteLike['occurred_at'] ?? DateTime.now().toUtc().toIso8601String();
+          await _mergeSystemEvent(remoteLike);
+        }
         await (_db.update(
           _db.pendingWrites,
         )..where((t) => t.id.equals(row.id))).write(

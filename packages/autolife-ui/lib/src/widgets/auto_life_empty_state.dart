@@ -25,13 +25,17 @@ class AutoLifeEmptyState extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AutoLifeSpacing.lg),
+    // Scroll so callers can place this inside tight flex slots (e.g. dashboard
+    // [Expanded] with ~100px height) without RenderFlex overflow.
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AutoLifeSpacing.lg),
+      child: Align(
+        alignment: Alignment.topCenter,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(icon, size: 48, color: scheme.onSurfaceVariant),
               const SizedBox(height: AutoLifeSpacing.md),

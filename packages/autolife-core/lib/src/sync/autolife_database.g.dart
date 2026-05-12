@@ -2918,6 +2918,394 @@ class PendingWritesCompanion extends UpdateCompanion<PendingWrite> {
   }
 }
 
+class $DashboardLayoutCacheTable extends DashboardLayoutCache
+    with TableInfo<$DashboardLayoutCacheTable, DashboardLayoutCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DashboardLayoutCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _familyIdMeta = const VerificationMeta(
+    'familyId',
+  );
+  @override
+  late final GeneratedColumn<String> familyId = GeneratedColumn<String>(
+    'family_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _memberScopeMeta = const VerificationMeta(
+    'memberScope',
+  );
+  @override
+  late final GeneratedColumn<String> memberScope = GeneratedColumn<String>(
+    'member_scope',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadJsonMeta = const VerificationMeta(
+    'payloadJson',
+  );
+  @override
+  late final GeneratedColumn<String> payloadJson = GeneratedColumn<String>(
+    'payload_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _layoutVersionMeta = const VerificationMeta(
+    'layoutVersion',
+  );
+  @override
+  late final GeneratedColumn<int> layoutVersion = GeneratedColumn<int>(
+    'layout_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    familyId,
+    memberScope,
+    payloadJson,
+    layoutVersion,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dashboard_layout_cache';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DashboardLayoutCacheData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('family_id')) {
+      context.handle(
+        _familyIdMeta,
+        familyId.isAcceptableOrUnknown(data['family_id']!, _familyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_familyIdMeta);
+    }
+    if (data.containsKey('member_scope')) {
+      context.handle(
+        _memberScopeMeta,
+        memberScope.isAcceptableOrUnknown(
+          data['member_scope']!,
+          _memberScopeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_memberScopeMeta);
+    }
+    if (data.containsKey('payload_json')) {
+      context.handle(
+        _payloadJsonMeta,
+        payloadJson.isAcceptableOrUnknown(
+          data['payload_json']!,
+          _payloadJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadJsonMeta);
+    }
+    if (data.containsKey('layout_version')) {
+      context.handle(
+        _layoutVersionMeta,
+        layoutVersion.isAcceptableOrUnknown(
+          data['layout_version']!,
+          _layoutVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {familyId, memberScope};
+  @override
+  DashboardLayoutCacheData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DashboardLayoutCacheData(
+      familyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}family_id'],
+      )!,
+      memberScope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}member_scope'],
+      )!,
+      payloadJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload_json'],
+      )!,
+      layoutVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}layout_version'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DashboardLayoutCacheTable createAlias(String alias) {
+    return $DashboardLayoutCacheTable(attachedDatabase, alias);
+  }
+}
+
+class DashboardLayoutCacheData extends DataClass
+    implements Insertable<DashboardLayoutCacheData> {
+  final String familyId;
+  final String memberScope;
+  final String payloadJson;
+  final int layoutVersion;
+  final DateTime updatedAt;
+  const DashboardLayoutCacheData({
+    required this.familyId,
+    required this.memberScope,
+    required this.payloadJson,
+    required this.layoutVersion,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['family_id'] = Variable<String>(familyId);
+    map['member_scope'] = Variable<String>(memberScope);
+    map['payload_json'] = Variable<String>(payloadJson);
+    map['layout_version'] = Variable<int>(layoutVersion);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DashboardLayoutCacheCompanion toCompanion(bool nullToAbsent) {
+    return DashboardLayoutCacheCompanion(
+      familyId: Value(familyId),
+      memberScope: Value(memberScope),
+      payloadJson: Value(payloadJson),
+      layoutVersion: Value(layoutVersion),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DashboardLayoutCacheData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DashboardLayoutCacheData(
+      familyId: serializer.fromJson<String>(json['familyId']),
+      memberScope: serializer.fromJson<String>(json['memberScope']),
+      payloadJson: serializer.fromJson<String>(json['payloadJson']),
+      layoutVersion: serializer.fromJson<int>(json['layoutVersion']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'familyId': serializer.toJson<String>(familyId),
+      'memberScope': serializer.toJson<String>(memberScope),
+      'payloadJson': serializer.toJson<String>(payloadJson),
+      'layoutVersion': serializer.toJson<int>(layoutVersion),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DashboardLayoutCacheData copyWith({
+    String? familyId,
+    String? memberScope,
+    String? payloadJson,
+    int? layoutVersion,
+    DateTime? updatedAt,
+  }) => DashboardLayoutCacheData(
+    familyId: familyId ?? this.familyId,
+    memberScope: memberScope ?? this.memberScope,
+    payloadJson: payloadJson ?? this.payloadJson,
+    layoutVersion: layoutVersion ?? this.layoutVersion,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DashboardLayoutCacheData copyWithCompanion(
+    DashboardLayoutCacheCompanion data,
+  ) {
+    return DashboardLayoutCacheData(
+      familyId: data.familyId.present ? data.familyId.value : this.familyId,
+      memberScope: data.memberScope.present
+          ? data.memberScope.value
+          : this.memberScope,
+      payloadJson: data.payloadJson.present
+          ? data.payloadJson.value
+          : this.payloadJson,
+      layoutVersion: data.layoutVersion.present
+          ? data.layoutVersion.value
+          : this.layoutVersion,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardLayoutCacheData(')
+          ..write('familyId: $familyId, ')
+          ..write('memberScope: $memberScope, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('layoutVersion: $layoutVersion, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(familyId, memberScope, payloadJson, layoutVersion, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DashboardLayoutCacheData &&
+          other.familyId == this.familyId &&
+          other.memberScope == this.memberScope &&
+          other.payloadJson == this.payloadJson &&
+          other.layoutVersion == this.layoutVersion &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DashboardLayoutCacheCompanion
+    extends UpdateCompanion<DashboardLayoutCacheData> {
+  final Value<String> familyId;
+  final Value<String> memberScope;
+  final Value<String> payloadJson;
+  final Value<int> layoutVersion;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const DashboardLayoutCacheCompanion({
+    this.familyId = const Value.absent(),
+    this.memberScope = const Value.absent(),
+    this.payloadJson = const Value.absent(),
+    this.layoutVersion = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DashboardLayoutCacheCompanion.insert({
+    required String familyId,
+    required String memberScope,
+    required String payloadJson,
+    this.layoutVersion = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : familyId = Value(familyId),
+       memberScope = Value(memberScope),
+       payloadJson = Value(payloadJson),
+       updatedAt = Value(updatedAt);
+  static Insertable<DashboardLayoutCacheData> custom({
+    Expression<String>? familyId,
+    Expression<String>? memberScope,
+    Expression<String>? payloadJson,
+    Expression<int>? layoutVersion,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (familyId != null) 'family_id': familyId,
+      if (memberScope != null) 'member_scope': memberScope,
+      if (payloadJson != null) 'payload_json': payloadJson,
+      if (layoutVersion != null) 'layout_version': layoutVersion,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DashboardLayoutCacheCompanion copyWith({
+    Value<String>? familyId,
+    Value<String>? memberScope,
+    Value<String>? payloadJson,
+    Value<int>? layoutVersion,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return DashboardLayoutCacheCompanion(
+      familyId: familyId ?? this.familyId,
+      memberScope: memberScope ?? this.memberScope,
+      payloadJson: payloadJson ?? this.payloadJson,
+      layoutVersion: layoutVersion ?? this.layoutVersion,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (familyId.present) {
+      map['family_id'] = Variable<String>(familyId.value);
+    }
+    if (memberScope.present) {
+      map['member_scope'] = Variable<String>(memberScope.value);
+    }
+    if (payloadJson.present) {
+      map['payload_json'] = Variable<String>(payloadJson.value);
+    }
+    if (layoutVersion.present) {
+      map['layout_version'] = Variable<int>(layoutVersion.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashboardLayoutCacheCompanion(')
+          ..write('familyId: $familyId, ')
+          ..write('memberScope: $memberScope, ')
+          ..write('payloadJson: $payloadJson, ')
+          ..write('layoutVersion: $layoutVersion, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AutolifeDatabase extends GeneratedDatabase {
   _$AutolifeDatabase(QueryExecutor e) : super(e);
   $AutolifeDatabaseManager get managers => $AutolifeDatabaseManager(this);
@@ -2932,9 +3320,15 @@ abstract class _$AutolifeDatabase extends GeneratedDatabase {
     this,
   );
   late final $PendingWritesTable pendingWrites = $PendingWritesTable(this);
+  late final $DashboardLayoutCacheTable dashboardLayoutCache =
+      $DashboardLayoutCacheTable(this);
   late final Index pendingWriteTenantIdempotency = Index(
     'pending_write_tenant_idempotency',
     'CREATE UNIQUE INDEX pending_write_tenant_idempotency ON pending_writes (tenant_id, idempotency_key)',
+  );
+  late final Index dashboardLayoutFamilyMember = Index(
+    'dashboard_layout_family_member',
+    'CREATE UNIQUE INDEX dashboard_layout_family_member ON dashboard_layout_cache (family_id, member_scope)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -2947,7 +3341,9 @@ abstract class _$AutolifeDatabase extends GeneratedDatabase {
     familyCache,
     membershipCache,
     pendingWrites,
+    dashboardLayoutCache,
     pendingWriteTenantIdempotency,
+    dashboardLayoutFamilyMember,
   ];
 }
 
@@ -4491,6 +4887,228 @@ typedef $$PendingWritesTableProcessedTableManager =
       PendingWrite,
       PrefetchHooks Function()
     >;
+typedef $$DashboardLayoutCacheTableCreateCompanionBuilder =
+    DashboardLayoutCacheCompanion Function({
+      required String familyId,
+      required String memberScope,
+      required String payloadJson,
+      Value<int> layoutVersion,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$DashboardLayoutCacheTableUpdateCompanionBuilder =
+    DashboardLayoutCacheCompanion Function({
+      Value<String> familyId,
+      Value<String> memberScope,
+      Value<String> payloadJson,
+      Value<int> layoutVersion,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$DashboardLayoutCacheTableFilterComposer
+    extends Composer<_$AutolifeDatabase, $DashboardLayoutCacheTable> {
+  $$DashboardLayoutCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get familyId => $composableBuilder(
+    column: $table.familyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get memberScope => $composableBuilder(
+    column: $table.memberScope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get layoutVersion => $composableBuilder(
+    column: $table.layoutVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DashboardLayoutCacheTableOrderingComposer
+    extends Composer<_$AutolifeDatabase, $DashboardLayoutCacheTable> {
+  $$DashboardLayoutCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get familyId => $composableBuilder(
+    column: $table.familyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get memberScope => $composableBuilder(
+    column: $table.memberScope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get layoutVersion => $composableBuilder(
+    column: $table.layoutVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DashboardLayoutCacheTableAnnotationComposer
+    extends Composer<_$AutolifeDatabase, $DashboardLayoutCacheTable> {
+  $$DashboardLayoutCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get familyId =>
+      $composableBuilder(column: $table.familyId, builder: (column) => column);
+
+  GeneratedColumn<String> get memberScope => $composableBuilder(
+    column: $table.memberScope,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get payloadJson => $composableBuilder(
+    column: $table.payloadJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get layoutVersion => $composableBuilder(
+    column: $table.layoutVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DashboardLayoutCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AutolifeDatabase,
+          $DashboardLayoutCacheTable,
+          DashboardLayoutCacheData,
+          $$DashboardLayoutCacheTableFilterComposer,
+          $$DashboardLayoutCacheTableOrderingComposer,
+          $$DashboardLayoutCacheTableAnnotationComposer,
+          $$DashboardLayoutCacheTableCreateCompanionBuilder,
+          $$DashboardLayoutCacheTableUpdateCompanionBuilder,
+          (
+            DashboardLayoutCacheData,
+            BaseReferences<
+              _$AutolifeDatabase,
+              $DashboardLayoutCacheTable,
+              DashboardLayoutCacheData
+            >,
+          ),
+          DashboardLayoutCacheData,
+          PrefetchHooks Function()
+        > {
+  $$DashboardLayoutCacheTableTableManager(
+    _$AutolifeDatabase db,
+    $DashboardLayoutCacheTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DashboardLayoutCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DashboardLayoutCacheTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$DashboardLayoutCacheTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> familyId = const Value.absent(),
+                Value<String> memberScope = const Value.absent(),
+                Value<String> payloadJson = const Value.absent(),
+                Value<int> layoutVersion = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardLayoutCacheCompanion(
+                familyId: familyId,
+                memberScope: memberScope,
+                payloadJson: payloadJson,
+                layoutVersion: layoutVersion,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String familyId,
+                required String memberScope,
+                required String payloadJson,
+                Value<int> layoutVersion = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DashboardLayoutCacheCompanion.insert(
+                familyId: familyId,
+                memberScope: memberScope,
+                payloadJson: payloadJson,
+                layoutVersion: layoutVersion,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DashboardLayoutCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AutolifeDatabase,
+      $DashboardLayoutCacheTable,
+      DashboardLayoutCacheData,
+      $$DashboardLayoutCacheTableFilterComposer,
+      $$DashboardLayoutCacheTableOrderingComposer,
+      $$DashboardLayoutCacheTableAnnotationComposer,
+      $$DashboardLayoutCacheTableCreateCompanionBuilder,
+      $$DashboardLayoutCacheTableUpdateCompanionBuilder,
+      (
+        DashboardLayoutCacheData,
+        BaseReferences<
+          _$AutolifeDatabase,
+          $DashboardLayoutCacheTable,
+          DashboardLayoutCacheData
+        >,
+      ),
+      DashboardLayoutCacheData,
+      PrefetchHooks Function()
+    >;
 
 class $AutolifeDatabaseManager {
   final _$AutolifeDatabase _db;
@@ -4507,4 +5125,6 @@ class $AutolifeDatabaseManager {
       $$MembershipCacheTableTableManager(_db, _db.membershipCache);
   $$PendingWritesTableTableManager get pendingWrites =>
       $$PendingWritesTableTableManager(_db, _db.pendingWrites);
+  $$DashboardLayoutCacheTableTableManager get dashboardLayoutCache =>
+      $$DashboardLayoutCacheTableTableManager(_db, _db.dashboardLayoutCache);
 }
