@@ -1,4 +1,0 @@
-# Optional: tables to temporarily exclude from the drift detector.
-# Any entry should carry an expiry/reason in review (plan: retire after 30 days).
-version: 1
-tables: []

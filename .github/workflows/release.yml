@@ -1,0 +1,108 @@
+name: Release APKs
+
+# Builds a release APK for every Flutter app under apps/* and attaches them to a
+# GitHub Release, so they can be sideloaded onto a phone (e.g. Poco F5).
+#
+# Trigger by pushing a tag, e.g.:
+#   git tag v0.1.0 && git push origin v0.1.0
+# Or run manually from the Actions tab (workflow_dispatch).
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: "3.41.9"
+
+jobs:
+  discover:
+    name: Discover Flutter apps
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.find.outputs.matrix }}
+      count: ${{ steps.find.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        name: Find apps/* with a pubspec.yaml
+        shell: bash
+        run: |
+          apps=$(find apps -mindepth 2 -maxdepth 2 -name pubspec.yaml -printf '%h\n' \
+            | sed 's#^apps/##' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "apps=$apps"
+          echo "matrix={\"app\":$apps}" >> "$GITHUB_OUTPUT"
+          echo "count=$(echo "$apps" | jq 'length')" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build ${{ matrix.app }}
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        working-directory: apps/${{ matrix.app }}
+        run: flutter pub get
+
+      - name: Build release APK
+        working-directory: apps/${{ matrix.app }}
+        run: flutter build apk --release
+
+      - name: Rename APK
+        shell: bash
+        run: |
+          src="apps/${{ matrix.app }}/build/app/outputs/flutter-apk/app-release.apk"
+          dst="autolife-${{ matrix.app }}-${{ github.ref_name }}.apk"
+          mkdir -p dist
+          cp "$src" "dist/$dst"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: autolife-${{ matrix.app }}
+          path: dist/*.apk
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all APKs
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create / update release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.apk
+          generate_release_notes: true
+          body: |
+            AutoLife app builds for tag ${{ github.ref_name }}.
+
+            **Install on your phone (sideload):** download the relevant
+            `autolife-<app>-${{ github.ref_name }}.apk` below and open it on the device.
+            See `docs/distribution.md` for full steps.

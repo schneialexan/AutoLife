@@ -1,32 +1,24 @@
-# Dart / Flutter
-.dart_tool/
-.packages
-.pub-cache/
-.pub/
-build/
-flutter-plugins/
-flutter-plugins-dependencies/
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# Melos
-**/pubspec_overrides.yaml
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Coverage
-coverage/
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
 
-# Supabase (local secrets / temp)
-supabase/.branches/
-supabase/.temp/
+# Env / secrets
+.env
+.env.*
+!.env.example
 
-# Generated security tooling (CI uploads artifacts separately)
-reports/
+# Logs
+*.log
 
-# Cursor agent debug logs (local only)
-.cursor/debug*.log
+# Generic build / dependency output (refined once a stack is chosen — see docs/open-decisions.md)
+build/
+dist/
+out/
+node_modules/
+.dart_tool/
+.packages

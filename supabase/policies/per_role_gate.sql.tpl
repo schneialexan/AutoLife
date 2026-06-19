@@ -1,8 +1,0 @@
--- Template: per_role_gate
--- Parameters: __TABLE__, __FAMILY_COL__, __ROLE_LITERAL__
--- Intent: allow when the caller has the given family_role in the row''s family.
---
--- Example (INSERT WITH CHECK for owner-only writes on capability_grants):
---   WITH CHECK (public.has_role(__TABLE__.__FAMILY_COL__, '__ROLE_LITERAL__'::public.family_role))
---
--- Use one policy per distinct role requirement; combine multiple roles with OR in a single policy when appropriate.
