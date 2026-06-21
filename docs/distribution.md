@@ -52,47 +52,29 @@ Android only lets a new APK **upgrade** an installed app when both are signed wi
 debug-signed releases can't upgrade each other — you get
 **"App not installed as package conflicts with an existing package."**
 
-Releases are signed with a single **shared keystore**. CI looks for it in this order:
-
-1. **`signing/autolife-release.jks` in the repo** (recommended for this private repo)
-2. `ANDROID_KEYSTORE_BASE64` GitHub secret (fallback — easy to break when pasted by hand)
-3. Debug key (warning only — upgrades will keep failing)
-
-Passwords stay in GitHub Actions secrets (short strings, safe to paste):
+Releases are signed with a single **shared keystore** stored as GitHub Actions secrets:
 
 | Secret | What it is |
 |--------|------------|
+| `ANDROID_KEYSTORE_BASE64` | the keystore file, base64-encoded (one line) |
 | `ANDROID_KEYSTORE_PASSWORD` | keystore password |
 | `ANDROID_KEY_ALIAS` | key alias (`autolife`) |
 | `ANDROID_KEY_PASSWORD` | key password |
 
 **One-time setup** (from the repo root):
 
-```sh
-./scripts/setup-release-keystore.sh      # macOS/Linux
-# or
-.\scripts\setup-release-keystore.ps1     # Windows
-```
-
-This generates `autolife-release.jks`, copies it to `signing/`, and (if the `gh` CLI is
-installed) uploads the password secrets. Then **commit** `signing/autolife-release.jks`:
-
-```sh
-git add signing/autolife-release.jks signing/README.md
-git commit -m "Add release signing keystore for CI."
-```
-
-Do **not** paste a multi-kilobyte base64 string into GitHub by hand — it often corrupts
-and causes `ANDROID_KEYSTORE_BASE64 is not valid base64`. If you must use the secret
-fallback, run `.\scripts\export-keystore-base64.ps1` and copy the single line from
-`autolife-release.jks.b64` with Ctrl+A (no quotes, no spaces).
+1. Create or place `autolife-release.jks` in the repo root (generate with `keytool` if needed).
+2. Run `.\scripts\getbase64.ps1` — writes `autolife-release.jks.b64`.
+3. Open `autolife-release.jks.b64`, **Ctrl+A**, copy the single line (no quotes, no spaces).
+4. Paste into the `ANDROID_KEYSTORE_BASE64` secret on GitHub.
+5. Set the three password/alias secrets to match your keystore.
 
 **Back up `autolife-release.jks` somewhere safe**; if you lose it you can never push an
 in-place upgrade to already-installed apps again.
 
 How it wires up at build time:
-- `release.yml` copies `signing/autolife-release.jks` (or decodes the base64 secret)
-  and writes `apps/<app>/android/key.properties` before building.
+- `release.yml` decodes `ANDROID_KEYSTORE_BASE64` and writes `apps/<app>/android/key.properties`
+  before building.
 - Each app's `android/app/build.gradle.kts` loads `key.properties` and signs `release`
   with it. If the file is absent (e.g. plain `flutter run`), it falls back to the debug
   key, so local dev needs no keystore.
