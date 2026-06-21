@@ -34,14 +34,21 @@ cross-app wiring.
   stored locally and opens in the system viewer. *Search online* is deferred.
 - **Asset detail** — read-only; product photo is the hero, receipt and warranty
   docs are openable; only filled fields show; delete cleans up local files.
+- **Sync (optional, off by default)** — Settings → **Sync** signs in to mirror
+  the vault to a Supabase account and across devices; Settings → **Backup &
+  restore** exports/imports a portable bundle for offline-only moves. The app is
+  fully usable with sync off — Hive stays the source of truth.
 
 ### Architecture
 
 - **State:** `flutter_riverpod` · **Persistence:** Hive (JSON-encoded, no
   TypeAdapters) · **Images/files:** `image_picker`, `file_picker`,
   `path_provider`, `http` (URL download), `open_filex` (open docs).
+- **Sync:** [`autolife_platform`](../../packages/autolife_platform) (encrypted
+  outbox + coordinator) with an `AssetsSyncGateway` under `lib/src/sync/`. See
+  [`docs/sync-architecture.md`](../../docs/sync-architecture.md).
 - Source layout under `lib/src/`: `models/`, `constants/`, `data/`, `services/`,
-  `providers/`, `widgets/`, `screens/`.
+  `providers/`, `widgets/`, `screens/`, `sync/`, `migration/`.
 
 ### Run / test
 
@@ -49,8 +56,13 @@ cross-app wiring.
 cd apps/assets
 flutter pub get
 flutter test
-flutter run            # Android device/emulator
+flutter run            # Android device/emulator (local-only)
 flutter build apk --release
+
+# Run with sync enabled (see .env.example):
+flutter run \
+  --dart-define=SUPABASE_URL=https://xyz.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=eyJ...
 ```
 
 UI wireframes: `autoassets-ui-design.canvas.tsx`.
@@ -66,7 +78,8 @@ UI wireframes: `autoassets-ui-design.canvas.tsx`.
 See [`docs/module-contract.md`](../../docs/module-contract.md).
 
 - **Owns:** assets, category types (field definitions), per-asset property values,
-  local images.
+  local images. When synced, mirrors these to the `assets.*` Supabase tables via
+  `AssetsSyncGateway` (exported from `auto_assets.dart` for the AutoLife shell).
 - **Emits:** _(added step by step as built)_
 - **Consumes:** _(added step by step as built)_
 - **Renders:** dashboard "warranty/return alerts" card; omnibar asset results

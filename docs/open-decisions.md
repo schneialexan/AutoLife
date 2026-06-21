@@ -23,17 +23,33 @@ re-enabled per app with `flutter create --platforms ...` later. See
 ---
 
 ## D2 — Backend & data platform
-**Status:** Open · **Leading candidate:** Supabase
+**Status:** Decided → **Supabase**
 
-Constraints:
-- Realtime sync (shared family lists update live).
-- Auth (multi-user households, roles).
-- File/blob storage (receipts, PDFs, photos).
-- Offline-first caching with conflict resolution.
-- Row-level, multi-tenant security (per-family isolation).
+Decided so AutoAssets (and future modules) can opt into cross-device sync while
+staying local-first. Supabase covers the constraints in one product: realtime +
+auth + Storage + Postgres RLS.
 
-Why Supabase is the front-runner: covers realtime + auth + storage + Postgres RLS in one.
-Open alternatives remain on the table.
+Constraints (all satisfied by the v1 design):
+- Realtime sync — Postgres + Realtime channels (polling on resume for MVP).
+- Auth — email/password is the primary multi-device path; optional device
+  pairing via a service-role Edge Function.
+- File/blob storage — private Storage bucket, signed URLs only.
+- Offline-first caching with conflict resolution — Hive stays the source of
+  truth; an encrypted outbox + server-time pull cursor + last-write-wins.
+- Row-level security — RLS on every table, `user_id = auth.uid()`.
+
+**Tenancy (v1):** personal account — `user_id` on every row. Households/roles
+(D6) are deferred.
+
+**Topology — shared project:** standalone AutoAssets and the AutoLife shell are
+both clients of **one Supabase project**, one identity namespace, and the same
+`assets.*` tables. "Migrating" between apps is therefore just signing in — there
+is no bespoke transfer step for synced users.
+
+The platform lives in [`packages/autolife_platform`](../packages/autolife_platform);
+each module ships a `ModuleSyncGateway`. SQL migrations + the `pair-device` Edge
+Function live in [`platform/supabase`](../platform/supabase). Full design:
+[`sync-architecture.md`](sync-architecture.md).
 
 ---
 
@@ -105,4 +121,6 @@ Revisit if/when Play Store distribution is wanted (needs a Play Console account 
 ## Decided
 
 - **D1 — Frontend framework:** Flutter (3.41.x, stable), Android-first.
+- **D2 — Backend & data platform:** Supabase (personal tenancy v1, shared-project
+  topology). See [`sync-architecture.md`](sync-architecture.md).
 - **D7 — Distribution & CI:** GitHub Releases sideload + GitHub Actions.

@@ -1,0 +1,44 @@
+# Local Supabase CLI configuration for the AutoLife platform.
+# Run `supabase start` from this directory for a local dev stack, then
+# `supabase db reset` to apply the migrations in ./migrations.
+
+project_id = "autolife"
+
+[api]
+enabled = true
+port = 54321
+# Expose the custom `assets` schema to PostgREST alongside the defaults so the
+# client can call client.schema('assets').from('items').
+schemas = ["public", "storage", "graphql_public", "assets"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+# The pair-device function needs the service-role key; keep verify_jwt on so the
+# already-authenticated device's session is required to *start* pairing. The
+# function itself authorizes the `complete` action by validating the code.
+[functions.pair-device]
+verify_jwt = false

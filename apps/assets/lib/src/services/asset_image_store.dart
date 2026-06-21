@@ -26,6 +26,10 @@ class AssetImageStore {
     return dir;
   }
 
+  /// Absolute path to the app-private image/document directory. Used by the
+  /// sync layer when downloading synced blobs.
+  Future<String> directoryPath() async => (await _imagesDir()).path;
+
   /// Copies [sourcePath] into app storage and returns the new local path.
   Future<String> saveImage(String sourcePath) async {
     final dir = await _imagesDir();
@@ -44,6 +48,18 @@ class AssetImageStore {
     final filename = '${DateTime.now().microsecondsSinceEpoch}$ext';
     final destination = p.join(dir.path, filename);
     await File(sourcePath).copy(destination);
+    return destination;
+  }
+
+  /// Writes raw [bytes] into app storage under a fresh filename with the given
+  /// [extension] (e.g. `.jpg`, `.pdf`) and returns the new local path. Used by
+  /// the import/migration flow to rematerialize bundled blobs.
+  Future<String> saveBytes(List<int> bytes, String extension) async {
+    final dir = await _imagesDir();
+    final ext = extension.startsWith('.') ? extension : '.$extension';
+    final filename = '${DateTime.now().microsecondsSinceEpoch}$ext';
+    final destination = p.join(dir.path, filename);
+    await File(destination).writeAsBytes(bytes);
     return destination;
   }
 

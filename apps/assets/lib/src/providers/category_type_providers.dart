@@ -50,6 +50,9 @@ class CategoryTypeNotifier extends StateNotifier<List<CategoryType>> {
     state = _repository.getAll();
   }
 
+  /// Re-reads from the repository. Called after a sync pull writes to Hive.
+  void reload() => _load();
+
   bool get isAtLimit => state.length >= CategoryType.maxTypes;
 
   Future<void> save(CategoryType type) async {

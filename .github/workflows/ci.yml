@@ -1,6 +1,7 @@
 name: CI
 
-# Analyze, format-check and test every Flutter app under apps/* on each push / PR.
+# Analyze, format-check and test every Flutter app under apps/* and every shared
+# package under packages/* on each push / PR.
 
 on:
   push:
@@ -59,4 +60,53 @@ jobs:
 
       - name: Test
         working-directory: apps/${{ matrix.app }}
+        run: flutter test
+
+  discover-packages:
+    name: Discover packages
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.find.outputs.matrix }}
+      count: ${{ steps.find.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: find
+        shell: bash
+        run: |
+          pkgs=$(find packages -mindepth 2 -maxdepth 2 -name pubspec.yaml -printf '%h\n' \
+            | sed 's#^packages/##' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "matrix={\"package\":$pkgs}" >> "$GITHUB_OUTPUT"
+          echo "count=$(echo "$pkgs" | jq 'length')" >> "$GITHUB_OUTPUT"
+
+  check-packages:
+    name: Check package ${{ matrix.package }}
+    needs: discover-packages
+    if: needs.discover-packages.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.discover-packages.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        working-directory: packages/${{ matrix.package }}
+        run: flutter pub get
+
+      - name: Format check
+        working-directory: packages/${{ matrix.package }}
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        working-directory: packages/${{ matrix.package }}
+        run: flutter analyze
+
+      - name: Test
+        working-directory: packages/${{ matrix.package }}
         run: flutter test
