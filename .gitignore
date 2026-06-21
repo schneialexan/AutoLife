@@ -5,12 +5,21 @@ Thumbs.db
 # Editor / IDE
 .idea/
 .vscode/
+.cursor/
 *.swp
 
 # Env / secrets
 .env
 .env.*
 !.env.example
+
+# Android release signing — never commit keystores or their passwords
+*.jks
+*.keystore
+key.properties
+
+# Local git hooks (install via scripts/setup-git-hooks.*)
+.githooks/
 
 # Logs
 *.log

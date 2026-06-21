@@ -64,9 +64,45 @@ jobs:
         working-directory: apps/${{ matrix.app }}
         run: flutter pub get
 
+      - name: Configure release signing
+        working-directory: apps/${{ matrix.app }}/android
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret set — release will fall" \
+              "back to the debug key. Sideload upgrades across releases will be blocked" \
+              "with 'package conflicts with an existing package'. Run" \
+              "scripts/setup-release-keystore.sh to fix this."
+            exit 0
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/upload-keystore.jks
+          cat > key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=${ANDROID_KEYSTORE_PASSWORD}
+          keyAlias=${ANDROID_KEY_ALIAS}
+          keyPassword=${ANDROID_KEY_PASSWORD}
+          EOF
+          echo "Configured release signing with the shared keystore."
+
       - name: Build release APK
         working-directory: apps/${{ matrix.app }}
-        run: flutter build apk --release
+        shell: bash
+        run: |
+          # Derive a versionName from the tag (strip leading "v") and use the
+          # monotonic workflow run number as the versionCode, so every release
+          # has a strictly higher version code than the previous one. This
+          # prevents Android's "App not installed" version downgrade error on
+          # sideload upgrades, without needing to bump pubspec by hand.
+          tag="${GITHUB_REF_NAME}"
+          build_name="${tag#v}"
+          flutter build apk --release \
+            --build-name="${build_name}" \
+            --build-number="${GITHUB_RUN_NUMBER}"
 
       - name: Rename APK
         shell: bash
