@@ -10,6 +10,12 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
+-- Explicit table grants (RLS still gates rows). Without these, hosted projects
+-- leave the Supabase roles without DML and every write hits
+-- "permission denied for table".
+grant select, insert, update, delete on table public.profiles
+  to anon, authenticated, service_role;
+
 alter table public.profiles enable row level security;
 
 create policy "profiles_select_own"
@@ -63,6 +69,11 @@ create table if not exists public.device_pairing_codes (
 
 create index if not exists device_pairing_codes_user_idx
   on public.device_pairing_codes (user_id);
+
+-- The service-role pair-device Edge Function bypasses RLS but still needs
+-- table-level DML privileges; without them it hits "permission denied".
+grant select, insert, update, delete on table public.device_pairing_codes
+  to anon, authenticated, service_role;
 
 alter table public.device_pairing_codes enable row level security;
 
