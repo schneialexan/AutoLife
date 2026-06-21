@@ -110,6 +110,12 @@ jobs:
       - name: Build release APK
         working-directory: apps/${{ matrix.app }}
         shell: bash
+        env:
+          # Optional Supabase config compiled in via --dart-define. Only the
+          # public anon/publishable key belongs here; the service-role key
+          # never ships to the client. When unset, the app stays local-only.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           # Derive a versionName from the tag (strip leading "v") and use the
           # monotonic workflow run number as the versionCode, so every release
@@ -118,9 +124,16 @@ jobs:
           # sideload upgrades, without needing to bump pubspec by hand.
           tag="${GITHUB_REF_NAME}"
           build_name="${tag#v}"
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            echo "Building with Supabase sync configured."
+          else
+            echo "::warning::SUPABASE_URL / SUPABASE_ANON_KEY not set — app will be local-only ('Sync is not enabled in this build')."
+          fi
           flutter build apk --release \
             --build-name="${build_name}" \
-            --build-number="${GITHUB_RUN_NUMBER}"
+            --build-number="${GITHUB_RUN_NUMBER}" \
+            --dart-define=SUPABASE_URL="${SUPABASE_URL}" \
+            --dart-define=SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY}"
 
       - name: Rename APK
         shell: bash
