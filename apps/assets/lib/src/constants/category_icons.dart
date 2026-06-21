@@ -111,11 +111,7 @@ class CategoryIcons {
       'Router Network',
       Icons.router_outlined,
     ),
-    CategoryIconSpec.material(
-      'icon:printer',
-      'Printer',
-      Icons.print_outlined,
-    ),
+    CategoryIconSpec.material('icon:printer', 'Printer', Icons.print_outlined),
     CategoryIconSpec.material(
       'icon:keyboard',
       'Keyboard',
@@ -205,11 +201,7 @@ class CategoryIcons {
       Icons.savings_outlined,
     ),
     CategoryIconSpec.material('icon:key', 'Key Access', Icons.key_outlined),
-    CategoryIconSpec.material(
-      'icon:lock',
-      'Lock Security',
-      Icons.lock_outline,
-    ),
+    CategoryIconSpec.material('icon:lock', 'Lock Security', Icons.lock_outline),
     CategoryIconSpec.material(
       'icon:shield',
       'Shield Warranty Protection',

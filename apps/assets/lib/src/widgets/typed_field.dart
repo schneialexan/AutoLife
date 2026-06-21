@@ -514,9 +514,7 @@ class DocumentTile extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                isPdf
-                    ? Icons.picture_as_pdf_outlined
-                    : Icons.image_outlined,
+                isPdf ? Icons.picture_as_pdf_outlined : Icons.image_outlined,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 12),

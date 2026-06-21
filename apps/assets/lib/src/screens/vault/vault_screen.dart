@@ -293,10 +293,7 @@ class _AssetCard extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (thumbnail != null) ...[
-                thumbnail,
-                const SizedBox(width: 12),
-              ],
+              if (thumbnail != null) ...[thumbnail, const SizedBox(width: 12)],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,8 +360,7 @@ class _AssetCard extends ConsumerWidget {
   Widget? _buildThumbnail(BuildContext context, Asset asset) {
     final theme = Theme.of(context);
     String? imagePath;
-    if (asset.productPhotoPath != null &&
-        asset.productPhotoPath!.isNotEmpty) {
+    if (asset.productPhotoPath != null && asset.productPhotoPath!.isNotEmpty) {
       imagePath = asset.productPhotoPath;
     } else if (asset.hasReceipt && !asset.receiptIsPdf) {
       imagePath = asset.receiptPhotoPath;

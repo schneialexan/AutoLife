@@ -54,10 +54,9 @@ class SupabaseModuleTable implements RemoteModuleTable {
     // `return=minimal` skips selecting the written rows back: this is a
     // push-only operation, so it saves a round-trip and sidesteps RLS edge
     // cases on the returned representation.
-    await _builder.upsert(payload, onConflict: 'id').setHeader(
-          'Prefer',
-          'return=minimal,resolution=merge-duplicates',
-        );
+    await _builder
+        .upsert(payload, onConflict: 'id')
+        .setHeader('Prefer', 'return=minimal,resolution=merge-duplicates');
   }
 
   @override

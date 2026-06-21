@@ -101,7 +101,10 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
           icon: Icons.cloud_off_outlined,
         );
       } else {
-        _showResult('Everything is up to date', icon: Icons.cloud_done_outlined);
+        _showResult(
+          'Everything is up to date',
+          icon: Icons.cloud_done_outlined,
+        );
       }
     } catch (error) {
       if (mounted) {
@@ -158,9 +161,7 @@ class _SyncSettingsScreenState extends ConsumerState<SyncSettingsScreen> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: background,
         duration: Duration(seconds: isError ? 6 : 3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Row(
           children: [
             Icon(leadingIcon, color: foreground),

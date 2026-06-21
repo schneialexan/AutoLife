@@ -148,8 +148,7 @@ class Asset {
     final rawDocs = (json['warrantyDocuments'] as List?) ?? const <dynamic>[];
     final docs = rawDocs
         .map(
-          (raw) =>
-              AssetDocument.fromJson((raw as Map).cast<String, dynamic>()),
+          (raw) => AssetDocument.fromJson((raw as Map).cast<String, dynamic>()),
         )
         .toList();
     final rawPrice = json['price'];

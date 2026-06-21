@@ -11,7 +11,10 @@ class AssetDocument {
   /// Whether the document is a PDF (by file extension).
   bool get isPdf => path.toLowerCase().endsWith('.pdf');
 
-  Map<String, dynamic> toJson() => <String, dynamic>{'path': path, 'name': name};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'path': path,
+    'name': name,
+  };
 
   factory AssetDocument.fromJson(Map<String, dynamic> json) {
     return AssetDocument(

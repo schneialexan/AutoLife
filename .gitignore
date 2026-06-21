@@ -22,3 +22,7 @@ out/
 node_modules/
 .dart_tool/
 .packages
+
+# Supabase CLI local state
+platform/supabase/.temp/
+platform/supabase/.branches/

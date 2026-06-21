@@ -20,10 +20,7 @@ Future<String?> showIconPickerSheet(
       ),
       child: FractionallySizedBox(
         heightFactor: 0.8,
-        child: _IconPickerSheet(
-          selected: selected,
-          accentColor: accentColor,
-        ),
+        child: _IconPickerSheet(selected: selected, accentColor: accentColor),
       ),
     ),
   );

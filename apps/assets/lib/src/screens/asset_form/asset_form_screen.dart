@@ -447,7 +447,8 @@ class _AssetFormScreenState extends ConsumerState<AssetFormScreen> {
                 _FieldLabel('Receipt'),
                 ReceiptField(
                   path: _receiptPhotoPath,
-                  isPdf: _receiptPhotoPath != null &&
+                  isPdf:
+                      _receiptPhotoPath != null &&
                       _receiptPhotoPath!.toLowerCase().endsWith('.pdf'),
                   onPick: _pickReceipt,
                   onChanged: _onReceiptChanged,

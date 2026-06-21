@@ -27,9 +27,7 @@ class IconGridPicker extends StatelessWidget {
     if (q.isEmpty) {
       return specs;
     }
-    return specs
-        .where((spec) => spec.label.toLowerCase().contains(q))
-        .toList();
+    return specs.where((spec) => spec.label.toLowerCase().contains(q)).toList();
   }
 
   @override
@@ -55,12 +53,8 @@ class IconGridPicker extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (icons.isNotEmpty) ...[
-          _GroupLabel('Icons'),
-          _grid(context, icons),
-        ],
-        if (icons.isNotEmpty && emojis.isNotEmpty)
-          const SizedBox(height: 12),
+        if (icons.isNotEmpty) ...[_GroupLabel('Icons'), _grid(context, icons)],
+        if (icons.isNotEmpty && emojis.isNotEmpty) const SizedBox(height: 12),
         if (emojis.isNotEmpty) ...[
           _GroupLabel('Emoji'),
           _grid(context, emojis),
