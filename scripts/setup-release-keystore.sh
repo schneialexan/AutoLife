@@ -52,7 +52,7 @@ keystore_b64="$(base64 -w0 "$KEYSTORE_FILE" 2>/dev/null || base64 "$KEYSTORE_FIL
 
 if command -v gh >/dev/null 2>&1; then
   echo "Uploading secrets to GitHub via gh..."
-  printf '%s' "$keystore_b64" | gh secret set ANDROID_KEYSTORE_BASE64
+  gh secret set ANDROID_KEYSTORE_BASE64 --body "$keystore_b64"
   printf '%s' "$store_pw"     | gh secret set ANDROID_KEYSTORE_PASSWORD
   printf '%s' "$KEY_ALIAS"    | gh secret set ANDROID_KEY_ALIAS
   printf '%s' "$store_pw"     | gh secret set ANDROID_KEY_PASSWORD

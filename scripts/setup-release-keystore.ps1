@@ -49,7 +49,7 @@ $keystoreB64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path $
 
 if (Get-Command gh -ErrorAction SilentlyContinue) {
   Write-Host "Uploading secrets to GitHub via gh..."
-  $keystoreB64 | gh secret set ANDROID_KEYSTORE_BASE64
+  gh secret set ANDROID_KEYSTORE_BASE64 --body $keystoreB64
   $storePw     | gh secret set ANDROID_KEYSTORE_PASSWORD
   $KeyAlias    | gh secret set ANDROID_KEY_ALIAS
   $storePw     | gh secret set ANDROID_KEY_PASSWORD

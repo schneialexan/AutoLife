@@ -80,13 +80,26 @@ jobs:
               "scripts/setup-release-keystore.sh to fix this."
             exit 0
           fi
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/upload-keystore.jks
-          cat > key.properties <<EOF
-          storeFile=upload-keystore.jks
-          storePassword=${ANDROID_KEYSTORE_PASSWORD}
-          keyAlias=${ANDROID_KEY_ALIAS}
-          keyPassword=${ANDROID_KEY_PASSWORD}
-          EOF
+          # GitHub secret paste / copy often introduces stray whitespace or line
+          # breaks; GNU base64 -d rejects those as "invalid input".
+          keystore_b64="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]')"
+          if ! printf '%s' "$keystore_b64" | base64 --ignore-garbage -d > app/upload-keystore.jks; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64."
+            echo "Re-upload from your existing keystore:"
+            echo "  ./scripts/upload-release-keystore-secret.sh"
+            echo "  .\\scripts\\upload-release-keystore-secret.ps1"
+            exit 1
+          fi
+          if [ ! -s app/upload-keystore.jks ]; then
+            echo "::error::Decoded keystore is empty — ANDROID_KEYSTORE_BASE64 may be truncated."
+            exit 1
+          fi
+          {
+            echo "storeFile=upload-keystore.jks"
+            echo "storePassword=${ANDROID_KEYSTORE_PASSWORD}"
+            echo "keyAlias=${ANDROID_KEY_ALIAS}"
+            echo "keyPassword=${ANDROID_KEY_PASSWORD}"
+          } > key.properties
           echo "Configured release signing with the shared keystore."
 
       - name: Build release APK
