@@ -45,6 +45,11 @@ keytool -genkeypair `
 
 Write-Host "Created $KeystoreFile (alias: $KeyAlias)."
 
+$signingDir = Join-Path $repoRoot "signing"
+New-Item -ItemType Directory -Force -Path $signingDir | Out-Null
+Copy-Item $KeystoreFile (Join-Path $signingDir $KeystoreFile) -Force
+Write-Host "Copied to signing/$KeystoreFile — commit this file so CI can sign releases without a base64 secret."
+
 $keystoreB64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path $KeystoreFile)))
 
 if (Get-Command gh -ErrorAction SilentlyContinue) {

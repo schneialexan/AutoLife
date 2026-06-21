@@ -48,6 +48,10 @@ keytool -genkeypair \
 
 echo "Created $KEYSTORE_FILE (alias: $KEY_ALIAS)."
 
+mkdir -p signing
+cp "$KEYSTORE_FILE" "signing/$KEYSTORE_FILE"
+echo "Copied to signing/$KEYSTORE_FILE — commit this file so CI can sign releases without a base64 secret."
+
 keystore_b64="$(base64 -w0 "$KEYSTORE_FILE" 2>/dev/null || base64 "$KEYSTORE_FILE" | tr -d '\n')"
 
 if command -v gh >/dev/null 2>&1; then

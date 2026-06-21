@@ -73,31 +73,40 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret set — release will fall" \
-              "back to the debug key. Sideload upgrades across releases will be blocked" \
-              "with 'package conflicts with an existing package'. Run" \
-              "scripts/setup-release-keystore.sh to fix this."
+          KEYSTORE_SRC="$GITHUB_WORKSPACE/signing/autolife-release.jks"
+          KEY_ALIAS="${ANDROID_KEY_ALIAS:-autolife}"
+
+          if [ -f "$KEYSTORE_SRC" ]; then
+            cp "$KEYSTORE_SRC" app/upload-keystore.jks
+            echo "Using committed keystore from signing/autolife-release.jks"
+          elif [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            keystore_b64="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]')"
+            if ! printf '%s' "$keystore_b64" | base64 --ignore-garbage -d > app/upload-keystore.jks; then
+              echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64 (${#keystore_b64} chars after cleanup)."
+              echo "Fix: commit signing/autolife-release.jks (recommended for this private repo),"
+              echo "or re-upload the secret with scripts/upload-release-keystore-secret.ps1"
+              exit 1
+            fi
+            if [ ! -s app/upload-keystore.jks ]; then
+              echo "::error::Decoded keystore is empty — ANDROID_KEYSTORE_BASE64 may be truncated (${#keystore_b64} chars)."
+              exit 1
+            fi
+            echo "Using ANDROID_KEYSTORE_BASE64 secret (${#keystore_b64} chars)"
+          else
+            echo "::warning::No signing keystore found — release will fall back to the debug key."
+            echo "Add signing/autolife-release.jks to the repo, or set ANDROID_KEYSTORE_BASE64."
             exit 0
           fi
-          # GitHub secret paste / copy often introduces stray whitespace or line
-          # breaks; GNU base64 -d rejects those as "invalid input".
-          keystore_b64="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]')"
-          if ! printf '%s' "$keystore_b64" | base64 --ignore-garbage -d > app/upload-keystore.jks; then
-            echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64."
-            echo "Re-upload from your existing keystore:"
-            echo "  ./scripts/upload-release-keystore-secret.sh"
-            echo "  .\\scripts\\upload-release-keystore-secret.ps1"
+
+          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "::error::ANDROID_KEYSTORE_PASSWORD and ANDROID_KEY_PASSWORD secrets are required."
             exit 1
           fi
-          if [ ! -s app/upload-keystore.jks ]; then
-            echo "::error::Decoded keystore is empty — ANDROID_KEYSTORE_BASE64 may be truncated."
-            exit 1
-          fi
+
           {
             echo "storeFile=upload-keystore.jks"
             echo "storePassword=${ANDROID_KEYSTORE_PASSWORD}"
-            echo "keyAlias=${ANDROID_KEY_ALIAS}"
+            echo "keyAlias=${KEY_ALIAS}"
             echo "keyPassword=${ANDROID_KEY_PASSWORD}"
           } > key.properties
           echo "Configured release signing with the shared keystore."

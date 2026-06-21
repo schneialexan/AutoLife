@@ -13,10 +13,12 @@ Thumbs.db
 .env.*
 !.env.example
 
-# Android release signing — never commit keystores or their passwords
-*.jks
+# Android release signing — never commit keystores at repo root
+/autolife-release.jks
 *.keystore
+*.jks.b64
 key.properties
+# signing/autolife-release.jks is committed on purpose — see signing/README.md
 
 # Local git hooks (install via scripts/setup-git-hooks.*)
 .githooks/

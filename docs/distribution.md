@@ -52,12 +52,16 @@ Android only lets a new APK **upgrade** an installed app when both are signed wi
 debug-signed releases can't upgrade each other — you get
 **"App not installed as package conflicts with an existing package."**
 
-To fix this, releases are signed with a single **shared keystore** stored as encrypted
-GitHub Actions secrets:
+Releases are signed with a single **shared keystore**. CI looks for it in this order:
+
+1. **`signing/autolife-release.jks` in the repo** (recommended for this private repo)
+2. `ANDROID_KEYSTORE_BASE64` GitHub secret (fallback — easy to break when pasted by hand)
+3. Debug key (warning only — upgrades will keep failing)
+
+Passwords stay in GitHub Actions secrets (short strings, safe to paste):
 
 | Secret | What it is |
 |--------|------------|
-| `ANDROID_KEYSTORE_BASE64` | the keystore file, base64-encoded |
 | `ANDROID_KEYSTORE_PASSWORD` | keystore password |
 | `ANDROID_KEY_ALIAS` | key alias (`autolife`) |
 | `ANDROID_KEY_PASSWORD` | key password |
@@ -70,23 +74,31 @@ GitHub Actions secrets:
 .\scripts\setup-release-keystore.ps1     # Windows
 ```
 
-This generates `autolife-release.jks`, base64-encodes it, and (if the `gh` CLI is
-installed) uploads all four secrets for you. The keystore file itself is gitignored —
-**back it up somewhere safe and off GitHub**; if you lose it you can never push an
+This generates `autolife-release.jks`, copies it to `signing/`, and (if the `gh` CLI is
+installed) uploads the password secrets. Then **commit** `signing/autolife-release.jks`:
+
+```sh
+git add signing/autolife-release.jks signing/README.md
+git commit -m "Add release signing keystore for CI."
+```
+
+Do **not** paste a multi-kilobyte base64 string into GitHub by hand — it often corrupts
+and causes `ANDROID_KEYSTORE_BASE64 is not valid base64`. If you must use the secret
+fallback, run `.\scripts\export-keystore-base64.ps1` and copy the single line from
+`autolife-release.jks.b64` with Ctrl+A (no quotes, no spaces).
+
+**Back up `autolife-release.jks` somewhere safe**; if you lose it you can never push an
 in-place upgrade to already-installed apps again.
 
 How it wires up at build time:
-- `release.yml` decodes the keystore and writes `apps/<app>/android/key.properties`
-  before building.
+- `release.yml` copies `signing/autolife-release.jks` (or decodes the base64 secret)
+  and writes `apps/<app>/android/key.properties` before building.
 - Each app's `android/app/build.gradle.kts` loads `key.properties` and signs `release`
   with it. If the file is absent (e.g. plain `flutter run`), it falls back to the debug
   key, so local dev needs no keystore.
 - CI also sets `versionCode` from the workflow run number (`--build-number`), so each
   release is strictly newer than the last and avoids Android's downgrade ("App not
   installed") error.
-
-Until the secrets are configured, releases still build but fall back to the debug key
-(CI logs a warning), and cross-release upgrades will keep failing.
 
 > The first signed release establishes the key. If apps were previously installed with a
 > debug-signed APK, that **one** transition still requires an uninstall/reinstall (back up
