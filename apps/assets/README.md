@@ -20,16 +20,26 @@ cross-app wiring.
   types (`Category`, `Brand`, `Model`) are seeded once.
 - **Value kinds** — Text, Number, Date, Money, Photo, and **Select** (dropdown
   with user-defined options).
-- **Asset form** — fixed **Purchase** fields (name, date, price, receipt photo,
-  all optional) plus **opt-in category fields** added via the **`+` on the
-  Categories header** → scrollable bottom-sheet picker (with a "Create new type"
-  footer). Nothing is required: an empty asset saves as "Untitled asset".
-- **Asset detail** — read-only; only filled fields; delete cleans up images.
+- **Asset form** — fixed **Purchase** fields (name, date, price, **product
+  photo**, **receipt**, all optional) plus **opt-in category fields** added via
+  the **`+` on the Categories header** → scrollable bottom-sheet picker (with a
+  "Create new type" footer), and a **Warranty** section. Nothing is required: an
+  empty asset saves as "Untitled asset".
+- **Product photo** — upload from camera/gallery or **paste an image URL**
+  (downloaded and stored locally, so it works offline after save). *Search
+  online* is a deferred placeholder.
+- **Receipt** — a single slot holding **one image OR one PDF** (take photo,
+  choose from gallery, or pick a PDF/file). *From QR / link* is deferred.
+- **Warranty documents** — attach **multiple PDFs and/or images**; each is
+  stored locally and opens in the system viewer. *Search online* is deferred.
+- **Asset detail** — read-only; product photo is the hero, receipt and warranty
+  docs are openable; only filled fields show; delete cleans up local files.
 
 ### Architecture
 
 - **State:** `flutter_riverpod` · **Persistence:** Hive (JSON-encoded, no
-  TypeAdapters) · **Images:** `image_picker` + `path_provider`.
+  TypeAdapters) · **Images/files:** `image_picker`, `file_picker`,
+  `path_provider`, `http` (URL download), `open_filex` (open docs).
 - Source layout under `lib/src/`: `models/`, `constants/`, `data/`, `services/`,
   `providers/`, `widgets/`, `screens/`.
 
@@ -66,7 +76,11 @@ See [`docs/module-contract.md`](../../docs/module-contract.md).
 AutoMaintain (#11) may be absorbed here as a "Maintenance" tab — decide during its planning.
 
 ## Follow-up milestones
-1. Receipt scan → pre-fill property values
-2. Timeline / claims
-3. Cross-module warranty reminders
-4. Extract shared models to `packages/` when a second app needs them
+1. **Search online** for product photos and warranty docs (currently a "Soon"
+   placeholder)
+2. **Receipt from QR / link** — webview-render-and-screenshot capture (currently
+   a "Soon" placeholder)
+3. Receipt scan → pre-fill property values
+4. Timeline / claims
+5. Cross-module warranty reminders
+6. Extract shared models to `packages/` when a second app needs them

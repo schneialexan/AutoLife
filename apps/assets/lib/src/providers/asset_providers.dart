@@ -59,7 +59,7 @@ class AssetNotifier extends StateNotifier<List<Asset>> {
     final existing = _repository.getById(id);
     await _repository.delete(id);
     if (existing != null) {
-      await _imageStore.deleteAll(existing.imagePaths());
+      await _imageStore.deleteAll(existing.localFilePaths());
     }
     _load();
   }

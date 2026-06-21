@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../models/asset.dart';
 import '../models/category_type.dart';
 import '../providers/asset_providers.dart';
 import '../providers/category_type_providers.dart';
+import '../widgets/typed_field.dart';
 import 'asset_form/asset_form_screen.dart';
 import 'vault/vault_screen.dart';
 
@@ -38,10 +40,16 @@ class AssetDetailScreen extends ConsumerWidget {
       }
     });
 
-    final hasReceipt =
-        asset.receiptPhotoPath != null && asset.receiptPhotoPath!.isNotEmpty;
+    final hasProductPhoto =
+        asset.productPhotoPath != null && asset.productPhotoPath!.isNotEmpty;
     final hasPurchase =
-        asset.price != null || asset.purchaseDate != null || asset.hasName;
+        asset.price != null ||
+        asset.purchaseDate != null ||
+        asset.hasName ||
+        asset.hasReceipt;
+    final warrantyDocs = asset.warrantyDocuments
+        .where((d) => d.path.isNotEmpty)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -73,9 +81,9 @@ class AssetDetailScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
-          if (hasReceipt)
+          if (hasProductPhoto)
             Image.file(
-              File(asset.receiptPhotoPath!),
+              File(asset.productPhotoPath!),
               height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -92,6 +100,28 @@ class AssetDetailScreen extends ConsumerWidget {
                 label: 'Date',
                 value: DateFormat('d MMM y').format(asset.purchaseDate!),
               ),
+            if (asset.hasReceipt)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: asset.receiptIsPdf
+                    ? DocumentTile(
+                        title: 'Receipt (PDF)',
+                        subtitle: 'Tap to open',
+                        isPdf: true,
+                        onOpen: () => OpenFilex.open(asset.receiptPhotoPath!),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          File(asset.receiptPhotoPath!),
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stack) =>
+                              const SizedBox.shrink(),
+                        ),
+                      ),
+              ),
           ],
           if (pairs.isNotEmpty) ...[
             _SectionTitle('Categories'),
@@ -102,6 +132,18 @@ class AssetDetailScreen extends ConsumerWidget {
                   vertical: 12,
                 ),
                 child: PropertyPairView(type: pair.key, value: pair.value),
+              ),
+          ],
+          if (warrantyDocs.isNotEmpty) ...[
+            _SectionTitle('Warranty'),
+            for (final doc in warrantyDocs)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                child: DocumentTile(
+                  title: doc.name,
+                  isPdf: doc.isPdf,
+                  onOpen: () => OpenFilex.open(doc.path),
+                ),
               ),
           ],
           Padding(

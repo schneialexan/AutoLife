@@ -1,3 +1,4 @@
+import 'asset_document.dart';
 import 'money.dart';
 import 'property_value.dart';
 
@@ -11,14 +12,25 @@ class Asset {
     this.purchaseDate,
     this.price,
     this.receiptPhotoPath,
+    this.productPhotoPath,
+    List<AssetDocument>? warrantyDocuments,
     Map<String, PropertyValue>? propertyValues,
-  }) : propertyValues = propertyValues ?? <String, PropertyValue>{};
+  }) : warrantyDocuments = warrantyDocuments ?? <AssetDocument>[],
+       propertyValues = propertyValues ?? <String, PropertyValue>{};
 
   final String id;
   final String? name;
   final DateTime? purchaseDate;
   final Money? price;
+
+  /// Local path to the receipt file. May be an image or a PDF (`.pdf`).
   final String? receiptPhotoPath;
+
+  /// Local path to the product photo (always an image).
+  final String? productPhotoPath;
+
+  /// Warranty proofs (PDFs and/or images).
+  final List<AssetDocument> warrantyDocuments;
 
   /// typeId -> typed value; only types the user explicitly added to this asset.
   final Map<String, PropertyValue> propertyValues;
@@ -43,6 +55,13 @@ class Asset {
 
   bool get hasName => (name?.trim().isNotEmpty) ?? false;
 
+  /// Whether a receipt file (image or PDF) is attached.
+  bool get hasReceipt => (receiptPhotoPath?.isNotEmpty) ?? false;
+
+  /// Whether the attached receipt is a PDF rather than an image.
+  bool get receiptIsPdf =>
+      hasReceipt && receiptPhotoPath!.toLowerCase().endsWith('.pdf');
+
   Asset copyWith({
     String? name,
     bool clearName = false,
@@ -52,6 +71,9 @@ class Asset {
     bool clearPrice = false,
     String? receiptPhotoPath,
     bool clearReceiptPhoto = false,
+    String? productPhotoPath,
+    bool clearProductPhoto = false,
+    List<AssetDocument>? warrantyDocuments,
     Map<String, PropertyValue>? propertyValues,
     DateTime? updatedAt,
   }) {
@@ -65,23 +87,36 @@ class Asset {
       receiptPhotoPath: clearReceiptPhoto
           ? null
           : (receiptPhotoPath ?? this.receiptPhotoPath),
+      productPhotoPath: clearProductPhoto
+          ? null
+          : (productPhotoPath ?? this.productPhotoPath),
+      warrantyDocuments: warrantyDocuments ?? this.warrantyDocuments,
       propertyValues: propertyValues ?? this.propertyValues,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-  /// All local image file paths referenced by this asset (receipt + photo
-  /// property values). Used for cleanup on delete.
-  List<String> imagePaths() {
+  /// All local file paths referenced by this asset (receipt + product photo +
+  /// Photo property values + warranty docs). Used for cleanup on delete.
+  List<String> localFilePaths() {
     final paths = <String>[];
     final receipt = receiptPhotoPath;
     if (receipt != null && receipt.isNotEmpty) {
       paths.add(receipt);
     }
+    final product = productPhotoPath;
+    if (product != null && product.isNotEmpty) {
+      paths.add(product);
+    }
     for (final value in propertyValues.values) {
       if (value is PhotoValue && value.path.isNotEmpty) {
         paths.add(value.path);
+      }
+    }
+    for (final doc in warrantyDocuments) {
+      if (doc.path.isNotEmpty) {
+        paths.add(doc.path);
       }
     }
     return paths;
@@ -93,6 +128,8 @@ class Asset {
     'purchaseDate': purchaseDate?.toIso8601String(),
     'price': price?.toJson(),
     'receiptPhotoPath': receiptPhotoPath,
+    'productPhotoPath': productPhotoPath,
+    'warrantyDocuments': warrantyDocuments.map((d) => d.toJson()).toList(),
     'propertyValues': propertyValues.map(
       (key, value) => MapEntry(key, value.toJson()),
     ),
@@ -108,6 +145,13 @@ class Asset {
         (value as Map).cast<String, dynamic>(),
       );
     });
+    final rawDocs = (json['warrantyDocuments'] as List?) ?? const <dynamic>[];
+    final docs = rawDocs
+        .map(
+          (raw) =>
+              AssetDocument.fromJson((raw as Map).cast<String, dynamic>()),
+        )
+        .toList();
     final rawPrice = json['price'];
     return Asset(
       id: json['id'] as String,
@@ -119,6 +163,8 @@ class Asset {
           ? null
           : Money.fromJson((rawPrice as Map).cast<String, dynamic>()),
       receiptPhotoPath: json['receiptPhotoPath'] as String?,
+      productPhotoPath: json['productPhotoPath'] as String?,
+      warrantyDocuments: docs,
       propertyValues: values,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),

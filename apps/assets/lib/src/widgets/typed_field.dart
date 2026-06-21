@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import '../models/asset_document.dart';
 import '../models/category_type.dart';
 import '../models/money.dart';
 import '../models/property_value.dart';
@@ -11,6 +12,9 @@ import '../models/value_kind.dart';
 
 /// Picks an image, stores it, and returns the new local path (or null).
 typedef ImagePickerCallback = Future<String?> Function();
+
+/// Picks any file (image or PDF), stores it, and returns the new path (or null).
+typedef FilePickerCallback = Future<String?> Function();
 
 /// Renders the correct input affordance for a category type's value kind and
 /// reports changes as a [PropertyValue] (or null when cleared/empty).
@@ -401,7 +405,14 @@ class PhotoDropzone extends StatelessWidget {
 }
 
 class DottedDropzonePlaceholder extends StatelessWidget {
-  const DottedDropzonePlaceholder({super.key});
+  const DottedDropzonePlaceholder({
+    super.key,
+    this.icon = Icons.photo_camera_outlined,
+    this.label = 'Tap to add photo (JPEG or PNG)',
+  });
+
+  final IconData icon;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -416,19 +427,297 @@ class DottedDropzonePlaceholder extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.photo_camera_outlined,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+          Icon(icon, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: 8),
-          Text(
-            'Tap to add photo (JPEG or PNG)',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          Flexible(
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A dimmed, non-interactive action with a trailing "Soon" pill, styled to
+/// match the deferred rows in Settings.
+class SoonAction extends StatelessWidget {
+  const SoonAction({super.key, required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Opacity(
+      opacity: 0.5,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Text(label, style: theme.textTheme.labelLarge),
+            const SizedBox(width: 8),
+            Chip(
+              label: const Text('Soon'),
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A tappable tile representing a stored document (PDF or image) with an
+/// optional trailing remove button.
+class DocumentTile extends StatelessWidget {
+  const DocumentTile({
+    super.key,
+    required this.title,
+    required this.isPdf,
+    this.subtitle,
+    this.onOpen,
+    this.onRemove,
+  });
+
+  final String title;
+  final String? subtitle;
+  final bool isPdf;
+  final VoidCallback? onOpen;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: theme.colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onOpen,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+          child: Row(
+            children: [
+              Icon(
+                isPdf
+                    ? Icons.picture_as_pdf_outlined
+                    : Icons.image_outlined,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (onRemove != null)
+                IconButton(
+                  tooltip: 'Remove',
+                  icon: const Icon(Icons.close, size: 18),
+                  onPressed: onRemove,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Product photo: upload (camera/gallery) dropzone with preview/remove, a
+/// "Paste image URL" action, and a disabled "Search online (Soon)" placeholder.
+class ProductPhotoField extends StatelessWidget {
+  const ProductPhotoField({
+    super.key,
+    required this.path,
+    required this.onChanged,
+    this.onPickImage,
+    this.onPasteUrl,
+  });
+
+  final String? path;
+  final ValueChanged<String?> onChanged;
+  final ImagePickerCallback? onPickImage;
+
+  /// Prompts for a URL, downloads it, and returns the stored local path.
+  final Future<String?> Function()? onPasteUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PhotoDropzone(
+          path: path,
+          onPickImage: onPickImage,
+          onChanged: onChanged,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: onPasteUrl == null
+                  ? null
+                  : () async {
+                      final stored = await onPasteUrl!();
+                      if (stored != null) {
+                        onChanged(stored);
+                      }
+                    },
+              icon: const Icon(Icons.link, size: 18),
+              label: const Text('Paste image URL'),
+            ),
+            const SoonAction(
+              icon: Icons.travel_explore_outlined,
+              label: 'Search online',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Receipt slot holding a single image OR PDF. Empty shows a dropzone, an image
+/// shows a preview, and a PDF shows an openable document tile.
+class ReceiptField extends StatelessWidget {
+  const ReceiptField({
+    super.key,
+    required this.path,
+    required this.isPdf,
+    required this.onPick,
+    required this.onChanged,
+    this.onOpen,
+  });
+
+  final String? path;
+  final bool isPdf;
+
+  /// Opens the receipt source picker and returns the stored local path.
+  final FilePickerCallback onPick;
+  final ValueChanged<String?> onChanged;
+  final VoidCallback? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasReceipt = path != null && path!.isNotEmpty;
+    if (hasReceipt && isPdf) {
+      return DocumentTile(
+        title: 'Receipt (PDF)',
+        subtitle: 'Tap to open',
+        isPdf: true,
+        onOpen: onOpen,
+        onRemove: () => onChanged(null),
+      );
+    }
+    if (hasReceipt) {
+      return PhotoDropzone(
+        path: path,
+        onPickImage: onPick,
+        onChanged: onChanged,
+      );
+    }
+    return InkWell(
+      onTap: () async {
+        final stored = await onPick();
+        if (stored != null) {
+          onChanged(stored);
+        }
+      },
+      borderRadius: BorderRadius.circular(10),
+      child: const DottedDropzonePlaceholder(
+        icon: Icons.receipt_long_outlined,
+        label: 'Tap to add receipt (photo or PDF)',
+      ),
+    );
+  }
+}
+
+/// Warranty documents: a list of file rows (icon + name + remove), an "Add
+/// file" action, and a disabled "Search online (Soon)" placeholder.
+class WarrantyDocsField extends StatelessWidget {
+  const WarrantyDocsField({
+    super.key,
+    required this.documents,
+    required this.onAdd,
+    required this.onRemove,
+    this.onOpen,
+  });
+
+  final List<AssetDocument> documents;
+
+  /// Picks a file (PDF or image), stores it, and returns the new document.
+  final Future<AssetDocument?> Function() onAdd;
+  final ValueChanged<int> onRemove;
+  final ValueChanged<AssetDocument>? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var i = 0; i < documents.length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: DocumentTile(
+              title: documents[i].name,
+              isPdf: documents[i].isPdf,
+              onOpen: onOpen == null ? null : () => onOpen!(documents[i]),
+              onRemove: () => onRemove(i),
+            ),
+          ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            OutlinedButton.icon(
+              onPressed: () async {
+                await onAdd();
+              },
+              icon: const Icon(Icons.attach_file, size: 18),
+              label: const Text('Add file'),
+            ),
+            const SoonAction(
+              icon: Icons.travel_explore_outlined,
+              label: 'Search online',
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

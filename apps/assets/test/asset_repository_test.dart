@@ -1,6 +1,7 @@
 import 'package:auto_assets/src/data/asset_storage.dart';
 import 'package:auto_assets/src/data/hive_asset_repository.dart';
 import 'package:auto_assets/src/models/asset.dart';
+import 'package:auto_assets/src/models/asset_document.dart';
 import 'package:auto_assets/src/models/money.dart';
 import 'package:auto_assets/src/models/property_value.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -84,5 +85,87 @@ void main() {
       ),
     );
     expect(repo.getAll().first.id, 'new');
+  });
+
+  test('round-trips product photo and warranty documents', () async {
+    final now = DateTime(2026, 4, 1);
+    await repo.save(
+      Asset(
+        id: 'media',
+        productPhotoPath: '/data/product.png',
+        warrantyDocuments: const [
+          AssetDocument(path: '/data/warranty.pdf', name: 'warranty.pdf'),
+          AssetDocument(path: '/data/card.jpg', name: 'card.jpg'),
+        ],
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    final reloaded = repo.getById('media')!;
+    expect(reloaded.productPhotoPath, '/data/product.png');
+    expect(reloaded.warrantyDocuments.length, 2);
+    expect(reloaded.warrantyDocuments.first.name, 'warranty.pdf');
+    expect(reloaded.warrantyDocuments.first.isPdf, isTrue);
+    expect(reloaded.warrantyDocuments[1].isPdf, isFalse);
+  });
+
+  test('detects a PDF receipt and reports it via receiptIsPdf', () async {
+    final now = DateTime(2026, 4, 2);
+    await repo.save(
+      Asset(
+        id: 'pdf-receipt',
+        receiptPhotoPath: '/data/receipt.PDF',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    final reloaded = repo.getById('pdf-receipt')!;
+    expect(reloaded.hasReceipt, isTrue);
+    expect(reloaded.receiptIsPdf, isTrue);
+  });
+
+  test('an image receipt is not flagged as a PDF', () {
+    final now = DateTime(2026, 4, 3);
+    final asset = Asset(
+      id: 'img-receipt',
+      receiptPhotoPath: '/data/receipt.jpg',
+      createdAt: now,
+      updatedAt: now,
+    );
+    expect(asset.hasReceipt, isTrue);
+    expect(asset.receiptIsPdf, isFalse);
+  });
+
+  test('localFilePaths covers receipt, product photo, photos, warranty', () {
+    final now = DateTime(2026, 4, 4);
+    final asset = Asset(
+      id: 'paths',
+      receiptPhotoPath: '/data/receipt.pdf',
+      productPhotoPath: '/data/product.jpg',
+      warrantyDocuments: const [
+        AssetDocument(path: '/data/w1.pdf', name: 'w1.pdf'),
+      ],
+      propertyValues: {'shot': const PhotoValue('/data/photo.png')},
+      createdAt: now,
+      updatedAt: now,
+    );
+    expect(
+      asset.localFilePaths(),
+      containsAll(<String>[
+        '/data/receipt.pdf',
+        '/data/product.jpg',
+        '/data/photo.png',
+        '/data/w1.pdf',
+      ]),
+    );
+    expect(asset.localFilePaths().length, 4);
+  });
+
+  test('AssetDocument JSON round-trip preserves path and name', () {
+    const doc = AssetDocument(path: '/data/manual.pdf', name: 'manual.pdf');
+    final restored = AssetDocument.fromJson(doc.toJson());
+    expect(restored.path, doc.path);
+    expect(restored.name, doc.name);
+    expect(restored.isPdf, isTrue);
   });
 }

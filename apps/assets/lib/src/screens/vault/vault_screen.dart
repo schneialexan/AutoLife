@@ -281,8 +281,7 @@ class _AssetCard extends ConsumerWidget {
     });
     final shown = pairs.take(2).toList();
     final extra = pairs.length - shown.length;
-    final hasPhoto =
-        asset.receiptPhotoPath != null && asset.receiptPhotoPath!.isNotEmpty;
+    final thumbnail = _buildThumbnail(context, asset);
 
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
@@ -294,18 +293,8 @@ class _AssetCard extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (hasPhoto) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.file(
-                    File(asset.receiptPhotoPath!),
-                    width: 52,
-                    height: 52,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stack) =>
-                        const SizedBox(width: 52, height: 52),
-                  ),
-                ),
+              if (thumbnail != null) ...[
+                thumbnail,
                 const SizedBox(width: 12),
               ],
               Expanded(
@@ -367,6 +356,47 @@ class _AssetCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// 52×52 leading thumbnail: product photo if set, else the receipt image,
+  /// else a PDF doc-icon tile when the receipt is a PDF.
+  Widget? _buildThumbnail(BuildContext context, Asset asset) {
+    final theme = Theme.of(context);
+    String? imagePath;
+    if (asset.productPhotoPath != null &&
+        asset.productPhotoPath!.isNotEmpty) {
+      imagePath = asset.productPhotoPath;
+    } else if (asset.hasReceipt && !asset.receiptIsPdf) {
+      imagePath = asset.receiptPhotoPath;
+    }
+    if (imagePath != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(imagePath),
+          width: 52,
+          height: 52,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stack) =>
+              const SizedBox(width: 52, height: 52),
+        ),
+      );
+    }
+    if (asset.receiptIsPdf) {
+      return Container(
+        width: 52,
+        height: 52,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          Icons.picture_as_pdf_outlined,
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      );
+    }
+    return null;
   }
 }
 
